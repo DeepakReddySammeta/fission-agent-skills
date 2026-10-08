@@ -1,5 +1,20 @@
 # fl-design-system changelog
 
+## 2.1.0 — 2026-10-08
+- **Bug fix, found in live testing**: all 10 skills grouped `greenfield` into
+  the same branch as `fission-shadcn`/`shadcn-bare` ("Step 2"), but Step 2's
+  install command assumes a shadcn project already exists. On an actually
+  empty project (no `package.json`, no `src`/`app`), that command has
+  nothing to run against — and in testing, the agent's fallback was a plain,
+  unbranded native HTML element with zero Fission styling applied. That's
+  the regression this fixes: `greenfield` is now its own branch that stops
+  and asks the engineer (scaffold the real project first, or use the
+  CSS-variables adapter as a minimum-viable branded fallback) instead of
+  silently dropping to unstyled markup. This was a real gap introduced by
+  the 2.0.0 split — the pre-split umbrella skill had explicit "ask, don't
+  guess" handling for greenfield that didn't survive the per-component
+  rewrite.
+
 ## 2.0.0 — 2026-10-08
 - **Breaking restructure**: split from one umbrella skill into 10 — one per
   Fission-owned component (`fl-ds-button`, `fl-ds-input`, `fl-ds-card`,

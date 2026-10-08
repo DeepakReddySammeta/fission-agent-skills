@@ -1,6 +1,6 @@
 {
   "name": "fl-design-system",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Fission UI — one skill per component (Button, Input, Card, Dialog, Table, Form, Badge, Select, Tabs, Toast), each detecting and adapting to whatever design system a project already uses.",
   "author": {
     "name": "Fission Labs Platform Team",
