@@ -1,43 +1,19 @@
 # Setup & testing runbook
 
-Nothing here has been pushed anywhere yet. This is the exact sequence to get
-from "files on disk" to "installed and verified working." I can't run the
-GitHub/`claude plugin` steps myself — this session has no GitHub account
-linked and no `claude` CLI pointed at your account — so these are commands
+Repo is pushed: <https://github.com/DeepakReddySammeta/fission-agent-skills>
+(private). This is the exact sequence to get from there to "installed and
+verified working." I can't run the `claude plugin` steps myself — this
+session has no `claude` CLI pointed at your account — so these are commands
 for you to run, with what each one should show you if it worked.
 
 ## 0. Before you start
 
-- A GitHub destination for the private repo — e.g.
-  `DeepakReddySammeta/fission-agent-skills`. Doesn't have to be the real org
-  yet; a personal private repo works fine for this first pass.
 - Node 18+ locally (the scripts use `node:fs`/`node:child_process`, nothing
   exotic).
 - The `claude` CLI, logged in, on a machine that is **not** this sandbox —
-  see the registry-reachability note in step 4, this matters.
+  see the registry-reachability note in step 3, this matters.
 
-## 1. Push to GitHub
-
-```bash
-cd fission-agent-skills
-git init
-git add -A
-git commit -m "Initial fl-design-system: 10 component skills"
-
-# Option A — gh CLI creates the repo and sets the remote in one step
-gh repo create DeepakReddySammeta/fission-agent-skills --private --source=. --remote=origin
-git push -u origin main
-
-# Option B — repo already created on github.com, just wire the remote
-git remote add origin git@github.com:DeepakReddySammeta/fission-agent-skills.git
-git branch -M main
-git push -u origin main
-```
-
-**Check it worked**: `git log --oneline` shows your commit, and the repo
-shows all 24 files on github.com.
-
-## 2. Register the marketplace, install the plugin
+## 1. Register the marketplace, install the plugin
 
 ```bash
 claude plugin marketplace add git@github.com:DeepakReddySammeta/fission-agent-skills.git
@@ -53,7 +29,7 @@ If this errors on the `marketplace add` step with an auth failure, it's
 almost always SSH keys — same as any private-repo clone, nothing special to
 this mechanism.
 
-## 3. Test the detector offline (no GitHub needed, re-runs what I already verified)
+## 2. Test the detector offline (no GitHub needed, re-runs what I already verified)
 
 These three fixtures reproduce exactly what I tested while building this —
 re-run them yourself so you're not taking my word for it:
@@ -82,7 +58,7 @@ If any of these don't match, the bug is in `detect-design-system.mjs`, not
 in Claude Code's plugin mechanism — isolate it here before suspecting the
 install.
 
-## 4. Test a real registry pull — do this from your own machine, not a sandboxed CI runner
+## 3. Test a real registry pull — do this from your own machine, not a sandboxed CI runner
 
 I tried to hit the live registry from this session to verify it end-to-end
 and got blocked:
@@ -113,11 +89,11 @@ plugins/fl-design-system/shared/scripts/install-fission-component.sh accordion
 # accordion isn't one of the 10 Fission-owned components
 ```
 
-## 5. Test that a skill actually fires in a real Claude Code session
+## 4. Test that a skill actually fires in a real Claude Code session
 
 This is the step that validates the whole premise, not just the scripts:
 
-1. Open a real project with the plugin installed (step 2).
+1. Open a real project with the plugin installed (step 1).
 2. Ask for something that should trigger exactly one skill — "add a delete
    confirmation dialog to this page" should pull `fl-ds-dialog`, not all ten.
 3. Confirm (via whatever this Claude Code version surfaces for active
@@ -131,7 +107,7 @@ This is the one step with no fixture I can hand you — it depends on your
 actual CLI version's UI for showing which skill fired, which I can't see
 from here.
 
-## 6. Cross-tool portability check (optional, from the original proposal)
+## 5. Cross-tool portability check (optional, from the original proposal)
 
 I checked this repo's frontmatter and confirmed every one of the 10 skills
 uses only `name` and `description` — no Claude-specific fields — so nothing
@@ -150,7 +126,7 @@ test, not full coverage.
 
 ## Exit criteria for this round
 
-- [ ] Repo pushed; `claude plugin marketplace add` resolves it
+- [ ] `claude plugin marketplace add` resolves the repo
 - [ ] `fl-design-system` installs; all 10 skills are visible
 - [ ] Each of the 3 detector fixtures above returns the expected result
 - [ ] A real `npx shadcn add .../button.json` pull succeeds from a real
