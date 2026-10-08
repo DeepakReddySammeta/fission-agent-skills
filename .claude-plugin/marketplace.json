@@ -1,0 +1,21 @@
+{
+  "name": "fission-marketplace",
+  "owner": {
+    "name": "Fission Labs Platform Team",
+    "email": "platform-skills@fissionlabs.com"
+  },
+  "metadata": {
+    "description": "Fission Labs' private catalogue of agentic skills. Right now: one bundle, fl-design-system, with a separate skill per UI component. Standards and delivery bundles are deferred to a later round — see README.",
+    "visibility": "private"
+  },
+  "plugins": [
+    {
+      "name": "fl-design-system",
+      "source": "./plugins/fl-design-system",
+      "description": "Fission UI — one skill per component, each detecting and adapting to whatever design system a project already uses.",
+      "version": "2.0.0"
+    }
+  ],
+  "_comment_upstream": "High-level/non-component skills (React & Next.js practices, accessibility, framework upgrades, library-version-matched guidance) are NOT built here — they're already published by their maintainers (Vercel, TanStack). See UPSTREAM.md for the install commands. This marketplace only carries what's unique to Fission's own component library, per the proposal's three-question rule.",
+  "_schema_note": "Verify this file's shape against https://code.claude.com/docs/en/plugins at setup time — the plugin marketplace schema may have changed since this was written (checked 2026-10-08)."
+}
