@@ -1,5 +1,24 @@
 # fl-design-system changelog
 
+## 4.1.0 — 2026-10-09
+- Added `fl-ds-new-project`: the entry point for a brand-new project where
+  the framework hasn't been decided yet. Shows a plain support table
+  (Next.js fully supported with a dedicated starter; React partially
+  supported with no dedicated starter but components installable; Vue,
+  Angular, Svelte, etc. not supported at all — they're architecturally
+  incompatible with shadcn/Radix, which is React-only, not a gap to close
+  later) and only proceeds with Fission's design system for a supported
+  choice. Hands off to `fl-ds-setup` once the framework is settled rather
+  than duplicating its scaffold/install logic.
+- Narrowed `fl-ds-setup`'s own description to assume the framework
+  question is already settled, and pointed it at `fl-ds-new-project` for
+  the undecided case — avoids the two skills' descriptions overlapping
+  enough to misroute or double-fire on the same "set up a new project"
+  prompt.
+- `fl-ds-setup`'s Step 2 now states plainly (confirmed against the
+  upstream repo) that the scaffold is Next.js only, one fixed template —
+  no flag to pick a different framework there.
+
 ## 4.0.0 — 2026-10-09
 - **Direction change, per explicit instruction after the generic
   `design-system` plugin broke on a live install**: stop trying to detect

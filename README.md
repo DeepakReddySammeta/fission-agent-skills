@@ -29,7 +29,8 @@ plugins/fl-design-system/              ← Fission's own design system, end to e
     install-fission-component.sh       ← registry install/update, guards against non-owned names
     sync-tokens.mjs                    ← reads fission-tokens.md as a key/value map
   skills/
-    fl-ds-setup/                       ← scaffold a new project on Fission's design system, or install/update it into an existing one
+    fl-ds-new-project/                 ← starting from scratch: asks which framework, states what Fission's design system actually supports
+    fl-ds-setup/                       ← scaffold a new Next.js project on Fission's design system, or install/update it into an existing one
     fl-ds-button/  fl-ds-input/  fl-ds-card/  fl-ds-dialog/  fl-ds-table/
     fl-ds-form/    fl-ds-badge/  fl-ds-select/ fl-ds-tabs/    fl-ds-toast/   ← each checks the detector first, installs on the spot if needed
 
@@ -112,7 +113,7 @@ claude plugin install frontend-common@fission --scope user   # optional, unrelat
   is the normal time to do this once.
 - **Check it worked**: `claude plugin list` should show both plugins you
   installed, each with its skills listed underneath (`fl-design-system`:
-  11 skills; `frontend-common`: 4 skills).
+  12 skills; `frontend-common`: 4 skills).
 - **Important**: a Claude Code session already running when you install a
   plugin will not pick it up — start a new `claude` session (or restart
   the current one) before expecting a skill to fire. This is the single

@@ -25,8 +25,9 @@ claude plugin install frontend-common@fission --scope user
 **Check it worked**: `claude plugin list` (confirm this exact flag against
 `code.claude.com/docs/en/plugins` for your installed CLI version — the
 marketplace mechanism's command surface isn't something I can verify from
-here) should list both plugins — `fl-design-system` (11 skills: `fl-ds-setup`
-plus 10 component skills), `frontend-common` (4 skills).
+here) should list both plugins — `fl-design-system` (12 skills:
+`fl-ds-new-project`, `fl-ds-setup`, plus 10 component skills),
+`frontend-common` (4 skills).
 
 If this errors on the `marketplace add` step with an auth failure, it's
 almost always SSH keys — same as any private-repo clone, nothing special to
@@ -120,29 +121,39 @@ auto-fire" gap raised before this round, and the one that actually proves
 the goal this round is built around: set up Fission's design system, then
 a plain prompt uses it correctly.
 
-1. Open a project that does **not** yet have Fission's design system
-   installed, with both plugins installed (step 1), **in a fresh session**
-   (see the restart note above).
-2. Ask for a component directly — "add a button" — without mentioning
+1. Open a completely empty folder (no `package.json` at all), with both
+   plugins installed (step 1), **in a fresh session** (see the restart
+   note above). Ask for a brand-new project without naming a framework —
+   "set up a new project" or similar. Confirm `fl-ds-new-project` fires,
+   shows the framework support table, and actually waits for an answer
+   rather than defaulting to Next.js unprompted.
+2. Answer "Next.js" and confirm it hands off to `fl-ds-setup`'s Step 2 (the
+   real scaffold command runs, not a re-explanation of the same table).
+   Separately, try answering "Vue" in a different empty folder and confirm
+   it refuses clearly (no Fission install attempted) rather than silently
+   proceeding or silently doing nothing.
+3. Open a project that does **not** yet have Fission's design system
+   installed, with both plugins installed, **in a fresh session**.
+4. Ask for a component directly — "add a button" — without mentioning
    setup at all. Confirm the skill that fires (`fl-ds-button`) runs the
    detector, sees `needs-setup`, installs the component itself, and then
    uses it — not a plain unbranded `<button>`, and not a stop-and-ask for
    something this low-risk.
-3. Ask for a second, different component in the same project. Confirm the
+5. Ask for a second, different component in the same project. Confirm the
    detector now reports `ready` (since at least one Fission component is
    already installed) and the skill goes straight to using it, no install
    step repeated.
-4. Repeat on a project that already has Fission's design system fully set
+6. Repeat on a project that already has Fission's design system fully set
    up — confirm `ready` is reported immediately and no install happens.
-5. Repeat once for `fe-debug` or `fe-explore` — ask a framework-agnostic
+7. Repeat once for `fe-debug` or `fe-explore` — ask a framework-agnostic
    question ("why is this component re-rendering") and confirm one of
    `frontend-common`'s skills fires without typing `/`.
-6. **If nothing fires unprompted but an explicit `/plugin:skill` invocation
+8. **If nothing fires unprompted but an explicit `/plugin:skill` invocation
    works**, that confirms the skill content is fine and isolates the gap
    to automatic description-matching specifically — report that distinction
    rather than "skills don't work," since the fix differs (a session/cache
    issue vs. a description-wording issue).
-7. **If an explicit invocation also does nothing**, check `claude plugin
+9. **If an explicit invocation also does nothing**, check `claude plugin
    list` again — the plugin may have installed in a disabled state, or the
    session genuinely predates the install (see step 1's restart note).
 
@@ -173,10 +184,15 @@ want a non-design-system data point too.
 ## Exit criteria for this round
 
 - [ ] `claude plugin marketplace add` resolves the repo
-- [ ] Both plugins install; 11 (`fl-design-system`) + 4 (`frontend-common`)
+- [ ] Both plugins install; 12 (`fl-design-system`) + 4 (`frontend-common`)
       skills are visible
 - [ ] Each detector fixture above (Fission design-system + frontend-
       framework) returns the expected result
+- [ ] `fl-ds-new-project` fires on an empty folder with no framework named,
+      shows the support table, and waits for an answer rather than
+      defaulting to Next.js
+- [ ] A "Vue" answer to `fl-ds-new-project` is refused clearly, with no
+      Fission install attempted
 - [ ] A real `npx shadcn add .../button.json` pull succeeds from a real
       machine, and the variant names match (or `fl-ds-button`'s `SKILL.md`
       gets corrected to match what actually ships)

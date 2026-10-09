@@ -1,6 +1,6 @@
 ---
 name: fl-ds-setup
-description: Use when a project needs Fission's own design system scaffolded from scratch, or installed/updated into an existing project. After this runs, the fl-ds-button/fl-ds-dialog/etc. component skills work on this project.
+description: Use when a Next.js project needs Fission's design system scaffolded from scratch, or any existing project needs its components installed/updated, and the framework choice is already settled. For a brand-new project where the framework/library hasn't been decided yet, see fl-ds-new-project first — it asks which one and confirms Fission's design system actually supports it before this skill runs.
 ---
 
 # Fission design-system setup
@@ -9,6 +9,11 @@ This plugin is scoped to one thing: Fission's own design system, end to
 end — from setup to the component skills actually working when an
 engineer asks for a Button, Dialog, and so on. It does not try to detect
 or adapt to any other client's design system.
+
+This skill assumes the framework question is already settled (Next.js for
+a from-scratch scaffold, or whatever an existing project already runs for
+an install/update). `fl-ds-new-project` is the entry point when that
+hasn't been decided yet — it hands off to this skill once it has.
 
 ## Step 1 — where does this project stand
 
@@ -22,11 +27,16 @@ node ../../scripts/detect-fission-design-system.mjs
 - **`ready`** (already installed) → nothing to scaffold; re-run Step 3 with
   `--overwrite` per component only to pull an update
 
-## Step 2 — scaffold a brand-new project
+## Step 2 — scaffold a brand-new Next.js project
+
+Confirmed against the upstream repo: this scaffolds one fixed template —
+Next.js, App Router, a gallery + dashboard demo. There's no flag to pick a
+different framework here; if the engineer wants something other than
+Next.js, that's `fl-ds-new-project`'s job, not this step.
 
 ```bash
 git clone https://github.com/FissionHQ/ui-design-system.git /tmp/fl-ui-ds
-cd /tmp/fl-ui-ds && npm run create -- <target-dir>
+cd /tmp/fl-ui-ds && npm run create -- <target-dir>   # add --skip-install to skip the npm install step
 ```
 
 Re-run Step 1's detector against `<target-dir>` afterward — it should now
@@ -68,3 +78,6 @@ than proceeding.
 Once this has run, every `fl-ds-*` component skill (`fl-ds-button`,
 `fl-ds-dialog`, …) detects the project as `ready` on its own — no separate
 step needed per component beyond what each of those skills already does.
+
+For "what framework should this new project even be" — see
+`fl-ds-new-project` instead of guessing Next.js here without asking.

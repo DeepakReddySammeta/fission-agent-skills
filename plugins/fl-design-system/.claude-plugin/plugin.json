@@ -1,7 +1,7 @@
 {
   "name": "fl-design-system",
-  "version": "4.0.0",
-  "description": "Fission's own design system, end to end: fl-ds-setup scaffolds a brand-new project on it or installs/updates its branded shadcn components into an existing one, and ten component skills (fl-ds-button, fl-ds-input, fl-ds-card, fl-ds-dialog, fl-ds-table, fl-ds-form, fl-ds-badge, fl-ds-select, fl-ds-tabs, fl-ds-toast) each check it's installed before using it, installing it on the spot if not. Scoped deliberately to Fission's own system only — no generic multi-brand detection.",
+  "version": "4.1.0",
+  "description": "Fission's own design system, end to end: fl-ds-new-project asks which framework a brand-new project should use and states plainly which ones Fission's design system actually supports (Next.js, fully; React, partially; Vue/Angular/etc., not at all — they're architecturally incompatible with shadcn/Radix). fl-ds-setup then scaffolds or installs/updates it once the framework is settled, and ten component skills (fl-ds-button, fl-ds-input, fl-ds-card, fl-ds-dialog, fl-ds-table, fl-ds-form, fl-ds-badge, fl-ds-select, fl-ds-tabs, fl-ds-toast) each check it's installed before using it, installing it on the spot if not. Scoped deliberately to Fission's own system only — no generic multi-brand detection.",
   "author": {
     "name": "Fission Labs Platform Team",
     "email": "platform-skills@fissionlabs.com"
@@ -18,5 +18,5 @@
       "registryBase": "https://FissionHQ.github.io/ui-design-system/r/"
     }
   },
-  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). No 'skills' array: the standard skills/ directory scan already covers all 11 skills here, and an explicit array only adds to that scan, so it would be a redundant hand-maintained duplicate."
+  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). No 'skills' array: the standard skills/ directory scan already covers all 12 skills here, and an explicit array only adds to that scan, so it would be a redundant hand-maintained duplicate."
 }
