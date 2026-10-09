@@ -1,0 +1,12 @@
+{
+  "_comment": "Known shadcn-based component registries this bundle can detect and route to. Each entry is one 'brand' — Fission's own design system, or (later) a client's own private registry. Adding a new client's design system here, plus one file under references/adapters/registries/<id>.md, is the whole integration: no change to the detector script or the 10 ds-* skills is needed.",
+  "registries": [
+    {
+      "id": "fission",
+      "label": "Fission UI (FissionHQ/ui-design-system)",
+      "ownedComponents": ["button", "input", "card", "dialog", "table", "form", "badge", "select", "tabs", "toast"],
+      "adapterDoc": "adapters/registries/fission.md",
+      "ponytail_note": "component list duplicated (in sync, not shared) with plugins/fl-design-system/references/component-catalog.md on purpose — keeps this plugin installable standalone with no cross-plugin path dependency. Update both if Fission's registry adds/removes a component."
+    }
+  ]
+}

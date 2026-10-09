@@ -1,13 +1,13 @@
 {
   "name": "fl-design-system",
-  "version": "2.1.0",
-  "description": "Fission UI — one skill per component (Button, Input, Card, Dialog, Table, Form, Badge, Select, Tabs, Toast), each detecting and adapting to whatever design system a project already uses.",
+  "version": "3.0.0",
+  "description": "Fission's own design system — scaffold a brand-new project on it, or install/update its branded shadcn components into an existing one. Pairs with the generic `design-system` plugin: once this has run, ds-button/ds-dialog/etc. detect this project as `shadcn:fission` automatically and route to it. Also holds Fission's token values and registry catalog, which `design-system`'s adapters read when mapping Fission's brand onto MUI/Chakra/AntD/plain CSS.",
   "author": {
     "name": "Fission Labs Platform Team",
     "email": "platform-skills@fissionlabs.com"
   },
   "license": "UNLICENSED",
-  "repository": "git@github.com:DeepakReddySammeta/fission-agent-skills.git",
+  "repository": "https://github.com/DeepakReddySammeta/fission-agent-skills.git",
   "owners": {
     "primary": "@<primary-owner-github-handle>",
     "backup": "@<backup-owner-github-handle>"
@@ -17,16 +17,7 @@
     "registryBase": "https://FissionHQ.github.io/ui-design-system/r/"
   },
   "skills": [
-    "./skills/fl-ds-button",
-    "./skills/fl-ds-input",
-    "./skills/fl-ds-card",
-    "./skills/fl-ds-dialog",
-    "./skills/fl-ds-table",
-    "./skills/fl-ds-form",
-    "./skills/fl-ds-badge",
-    "./skills/fl-ds-select",
-    "./skills/fl-ds-tabs",
-    "./skills/fl-ds-toast"
+    "./skills/fl-ds-setup"
   ],
-  "_schema_note": "Verify the 'skills' array shape against https://code.claude.com/docs/en/plugins — plugins usually auto-discover everything under skills/, so this may be redundant; kept explicit here so the 10-skill structure is visible from this file alone."
+  "_schema_note": "Verify the 'skills' array shape against https://code.claude.com/docs/en/plugins — plugins usually auto-discover everything under skills/, so this may be redundant; kept explicit here so the single-skill shape is visible from this file alone."
 }

@@ -1,5 +1,26 @@
 # fl-design-system changelog
 
+## 3.0.0 — 2026-10-08
+- **Breaking restructure**: the 10 per-component skills (`fl-ds-button`,
+  `fl-ds-input`, …) moved out of this plugin entirely, generalized to be
+  design-system-agnostic, and now live as `ds-button`, `ds-input`, etc. in a
+  new sibling plugin, `design-system`. Reasoning (per direction): those
+  skills' detect-and-adapt logic isn't actually Fission-specific — Fission
+  was just the one branded shadcn registry they special-cased. Making that
+  genuinely generic (any registered brand, including a future client's own
+  private registry, routes the same way) meant it couldn't keep living in a
+  plugin named `fl-design-system`.
+- This plugin now holds exactly one skill, `fl-ds-setup`: scaffold a new
+  project on Fission's design system, or install/update its components into
+  an existing shadcn project. Everything else here is reference data the
+  new `design-system` plugin's adapters read (`references/fission-tokens.md`,
+  `references/component-catalog.md`) plus the install script
+  (`scripts/install-fission-component.sh`) `fl-ds-setup` runs.
+- `shared/` is gone — its contents split across the two plugins per the
+  above; nothing here depends on `design-system`'s files via a hard
+  relative path, and nothing there depends on this plugin's files either,
+  so either can be installed alone.
+
 ## 2.1.0 — 2026-10-08
 - **Bug fix, found in live testing**: all 10 skills grouped `greenfield` into
   the same branch as `fission-shadcn`/`shadcn-bare` ("Step 2"), but Step 2's
