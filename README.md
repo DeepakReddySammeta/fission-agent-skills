@@ -98,8 +98,8 @@ Two commands, run once per machine, via the marketplace manifest:
 
 ```bash
 claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
-claude plugin install fl-design-system@fission-marketplace --scope user
-claude plugin install frontend-common@fission-marketplace --scope user   # optional, unrelated to design systems
+claude plugin install fl-design-system@fission --scope user
+claude plugin install frontend-common@fission --scope user   # optional, unrelated to design systems
 ```
 
 - **What each line does**: the first registers this repo as a plugin
@@ -120,6 +120,17 @@ claude plugin install frontend-common@fission-marketplace --scope user   # optio
 - If `marketplace add` fails with an auth error, it's almost always SSH
   keys against the private repo — same as any `git clone` over SSH,
   nothing special to this mechanism.
+- **Already added this marketplace under the old name?** The marketplace's
+  `name` changed from `fission-marketplace` to `fission` — a rename isn't
+  picked up by `marketplace update`, since you register one marketplace per
+  `name`. Remove the old registration first (this also uninstalls the
+  plugins you got from it), then re-add and reinstall:
+  ```bash
+  claude plugin marketplace remove fission-marketplace
+  claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
+  claude plugin install fl-design-system@fission --scope user
+  claude plugin install frontend-common@fission --scope user
+  ```
 
 ### Cursor / Codex
 
