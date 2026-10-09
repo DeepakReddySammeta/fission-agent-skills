@@ -1,6 +1,6 @@
 {
   "name": "fl-design-system",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Fission's own design system — scaffold a brand-new project on it, or install/update its branded shadcn components into an existing one. Pairs with the generic `design-system` plugin: once this has run, ds-button/ds-dialog/etc. detect this project as `shadcn:fission` automatically and route to it. Also holds Fission's token values and registry catalog, which `design-system`'s adapters read when mapping Fission's brand onto MUI/Chakra/AntD/plain CSS.",
   "author": {
     "name": "Fission Labs Platform Team",
@@ -8,16 +8,15 @@
   },
   "license": "UNLICENSED",
   "repository": "https://github.com/DeepakReddySammeta/fission-agent-skills.git",
-  "owners": {
-    "primary": "@<primary-owner-github-handle>",
-    "backup": "@<backup-owner-github-handle>"
+  "metadata": {
+    "owners": {
+      "primary": "@<primary-owner-github-handle>",
+      "backup": "@<backup-owner-github-handle>"
+    },
+    "upstream": {
+      "designSystemRepo": "https://github.com/FissionHQ/ui-design-system",
+      "registryBase": "https://FissionHQ.github.io/ui-design-system/r/"
+    }
   },
-  "upstream": {
-    "designSystemRepo": "https://github.com/FissionHQ/ui-design-system",
-    "registryBase": "https://FissionHQ.github.io/ui-design-system/r/"
-  },
-  "skills": [
-    "./skills/fl-ds-setup"
-  ],
-  "_schema_note": "Verify the 'skills' array shape against https://code.claude.com/docs/en/plugins — plugins usually auto-discover everything under skills/, so this may be redundant; kept explicit here so the single-skill shape is visible from this file alone."
+  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). The 'skills' array is intentionally omitted: it only adds to the default skills/ scan and fl-ds-setup already lives under skills/, so listing it was redundant. 'owners' and 'upstream' moved under 'metadata' — neither is a recognized top-level field and both would otherwise be silently stripped with a validate warning; 'metadata' is the documented place for free-form data Claude Code doesn't read."
 }

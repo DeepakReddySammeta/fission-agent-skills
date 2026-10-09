@@ -18,9 +18,9 @@ show you if it worked.
 
 ```bash
 claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
-claude plugin install design-system@fission --scope user
-claude plugin install fl-design-system@fission --scope user
-claude plugin install frontend-common@fission --scope user
+claude plugin install design-system@fission-marketplace --scope user
+claude plugin install fl-design-system@fission-marketplace --scope user
+claude plugin install frontend-common@fission-marketplace --scope user
 ```
 
 **Check it worked**: `claude plugin list` (confirm this exact flag against

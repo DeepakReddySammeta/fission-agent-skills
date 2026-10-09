@@ -107,9 +107,9 @@ Two commands, run once per machine, via the marketplace manifest:
 
 ```bash
 claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
-claude plugin install design-system@fission --scope user
-claude plugin install fl-design-system@fission --scope user   # only if this machine touches Fission-branded projects
-claude plugin install frontend-common@fission --scope user
+claude plugin install design-system@fission-marketplace --scope user
+claude plugin install fl-design-system@fission-marketplace --scope user   # only if this machine touches Fission-branded projects
+claude plugin install frontend-common@fission-marketplace --scope user
 ```
 
 - **What each line does**: the first registers this repo as a plugin

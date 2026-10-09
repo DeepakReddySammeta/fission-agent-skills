@@ -1,5 +1,18 @@
 # frontend-common changelog
 
+## 1.0.1 — 2026-10-09
+- Fixed every documented `claude plugin install frontend-common@fission`
+  command — the marketplace's real name is `fission-marketplace`, not
+  `fission`; confirmed against `code.claude.com/docs/en/plugins/
+  marketplace-reference`.
+- `owners` moved from a top-level `plugin.json` key into `metadata.owners`
+  (not a recognized top-level field, was being silently stripped).
+- Removed the explicit `skills` array from `plugin.json` — it only adds to
+  the default `skills/` scan, so listing paths already under `skills/` was
+  redundant.
+- GitHub URL in `repository` and install docs switched from SSH to HTTPS to
+  match the actual configured git remote.
+
 ## 1.0.0 — 2026-10-08
 - Initial release. Four skills, all framework-independent:
   `fe-debug`, `fe-explore`, `fe-knowledge-lookup` (procedures, not

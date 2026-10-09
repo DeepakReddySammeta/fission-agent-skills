@@ -1,6 +1,6 @@
 {
   "name": "frontend-common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Framework-independent frontend skills: debugging, codebase exploration, and knowledge lookup that apply the same way on React, Next, Angular, Vue, or plain JS. Also holds the gate for framework-specific upstream skills (Vercel/TanStack/etc.) — detects which frontend framework(s) a project actually uses and confirms with the engineer before recommending or installing any framework-specific bundle, so a React project never ends up with Angular skills loaded and vice versa.",
   "author": {
     "name": "Fission Labs Platform Team",
@@ -8,15 +8,11 @@
   },
   "license": "UNLICENSED",
   "repository": "https://github.com/DeepakReddySammeta/fission-agent-skills.git",
-  "owners": {
-    "primary": "@<primary-owner-github-handle>",
-    "backup": "@<backup-owner-github-handle>"
+  "metadata": {
+    "owners": {
+      "primary": "@<primary-owner-github-handle>",
+      "backup": "@<backup-owner-github-handle>"
+    }
   },
-  "skills": [
-    "./skills/fe-debug",
-    "./skills/fe-explore",
-    "./skills/fe-knowledge-lookup",
-    "./skills/fe-upstream-setup"
-  ],
-  "_schema_note": "Verify the 'skills' array shape against https://code.claude.com/docs/en/plugins — plugins usually auto-discover everything under skills/, so this may be redundant; kept explicit here so the 4-skill structure is visible from this file alone."
+  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). The 'skills' array is intentionally omitted: it only adds to the default skills/ scan and every skill here already lives under skills/, so listing it was redundant. 'owners' moved under 'metadata' — it isn't a recognized top-level field and would otherwise be silently stripped with a validate warning; 'metadata' is the documented place for free-form data Claude Code doesn't read."
 }

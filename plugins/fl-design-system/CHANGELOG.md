@@ -1,5 +1,30 @@
 # fl-design-system changelog
 
+## 3.0.1 — 2026-10-09
+- Fixed every documented `claude plugin install fl-design-system@fission`
+  command — the marketplace's real name is `fission-marketplace`, not
+  `fission`; confirmed against `code.claude.com/docs/en/plugins/
+  marketplace-reference`, which states the `@` suffix is exactly the
+  marketplace's own `name` field.
+- Also fixed a real path bug found the same pass: `fl-ds-setup/SKILL.md`
+  referenced its own plugin's `scripts/` and `references/` folders with
+  `../` (one level up) when the actual depth needs `../../` (two levels
+  up, same as every other skill in this repo) — every command in Steps 2–3
+  would have failed with "file not found" the first time anyone ran it.
+- `owners` and `upstream` moved from top-level `plugin.json` keys into
+  `metadata` (neither is a recognized top-level field, both were being
+  silently stripped with a validate warning).
+- Removed the explicit `skills` array from `plugin.json` — it only adds to
+  the default `skills/` scan, so listing `fl-ds-setup`, already under
+  `skills/`, was redundant.
+- GitHub URL in `repository` and install docs switched from SSH to HTTPS to
+  match the actual configured git remote.
+- Scripts (`install-fission-component.sh`, `sync-tokens.mjs`) lost their
+  executable bit when a prior pass rewrote them on their new path —
+  `install-fission-component.sh` is invoked directly (no `bash` prefix) in
+  both `SETUP.md` and `fl-ds-setup/SKILL.md`, so this would have failed
+  with "Permission denied" the first time anyone actually ran it. Restored.
+
 ## 3.0.0 — 2026-10-08
 - **Breaking restructure**: the 10 per-component skills (`fl-ds-button`,
   `fl-ds-input`, …) moved out of this plugin entirely, generalized to be

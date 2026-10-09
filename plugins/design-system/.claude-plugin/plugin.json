@@ -1,6 +1,6 @@
 {
   "name": "design-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Design-system-agnostic component skills (Button, Input, Card, Dialog, Table, Form, Badge, Select, Tabs, Toast). Each skill detects whatever design system a project already runs — a branded shadcn registry (Fission's or another client's own), bare shadcn, MUI, Chakra, AntD, or plain CSS — and adapts instead of assuming one stack. Carries zero Fission-specific logic itself; Fission's own registry is one registered entry in shared/references/brand-registries.json, same shape any other client's private registry would use.",
   "author": {
     "name": "Fission Labs Platform Team",
@@ -8,21 +8,11 @@
   },
   "license": "UNLICENSED",
   "repository": "https://github.com/DeepakReddySammeta/fission-agent-skills.git",
-  "owners": {
-    "primary": "@<primary-owner-github-handle>",
-    "backup": "@<backup-owner-github-handle>"
+  "metadata": {
+    "owners": {
+      "primary": "@<primary-owner-github-handle>",
+      "backup": "@<backup-owner-github-handle>"
+    }
   },
-  "skills": [
-    "./skills/ds-button",
-    "./skills/ds-input",
-    "./skills/ds-card",
-    "./skills/ds-dialog",
-    "./skills/ds-table",
-    "./skills/ds-form",
-    "./skills/ds-badge",
-    "./skills/ds-select",
-    "./skills/ds-tabs",
-    "./skills/ds-toast"
-  ],
-  "_schema_note": "Verify the 'skills' array shape against https://code.claude.com/docs/en/plugins — plugins usually auto-discover everything under skills/, so this may be redundant; kept explicit here so the 10-skill structure is visible from this file alone."
+  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). The 'skills' array is intentionally omitted: it only adds to the default skills/ scan and every skill here already lives under skills/, so listing it was a redundant hand-maintained duplicate. 'owners' moved under 'metadata' — it isn't a recognized top-level field and would otherwise be silently stripped with a validate warning; 'metadata' is the documented place for free-form data Claude Code doesn't read."
 }
