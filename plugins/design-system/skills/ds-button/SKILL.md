@@ -22,7 +22,7 @@ node ../../shared/scripts/detect-design-system.mjs
   project first (which brand/stack?) or just apply the CSS-variables
   adapter as a minimum-viable branded fallback. **Don't** silently fall back
   to a plain, unbranded `<button>` — that's not completing the task.
-- `unknown` → ask the engineer directly, don't guess.
+- `unknown` → see `../../shared/references/unknown-system.md` — the detector's report usually already shows why (an unrecognized component directory or design-systemish dependency); don't guess, and don't fall back to a different system's styling.
 
 ## Step 2A — registered brand (shadcn)
 

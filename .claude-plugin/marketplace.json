@@ -13,7 +13,7 @@
       "name": "design-system",
       "source": "./plugins/design-system",
       "description": "Design-system-agnostic UI component skills (Button, Input, Card, Dialog, Table, Form, Badge, Select, Tabs, Toast) — detects and adapts to whatever design system a project already uses (a registered branded shadcn registry, bare shadcn, MUI, Chakra, AntD, or plain CSS). No Fission-specific logic; Fission's own registry is just one registered entry.",
-      "version": "1.0.1"
+      "version": "1.1.0"
     },
     {
       "name": "fl-design-system",

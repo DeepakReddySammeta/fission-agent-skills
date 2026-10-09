@@ -1,6 +1,6 @@
 {
   "name": "design-system",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Design-system-agnostic component skills (Button, Input, Card, Dialog, Table, Form, Badge, Select, Tabs, Toast). Each skill detects whatever design system a project already runs — a branded shadcn registry (Fission's or another client's own), bare shadcn, MUI, Chakra, AntD, or plain CSS — and adapts instead of assuming one stack. Carries zero Fission-specific logic itself; Fission's own registry is one registered entry in shared/references/brand-registries.json, same shape any other client's private registry would use.",
   "author": {
     "name": "Fission Labs Platform Team",

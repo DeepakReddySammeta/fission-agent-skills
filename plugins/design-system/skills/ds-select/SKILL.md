@@ -17,7 +17,7 @@ node ../../shared/scripts/detect-design-system.mjs
 - `mui` / `chakra` / `antd` / `css-only` → **Step 2B**
 - `greenfield` → stop and ask — don't fall back to a plain unbranded native
   `<select>`
-- `unknown` → ask, don't guess
+- `unknown` → see `../../shared/references/unknown-system.md` — the detector's report usually already shows why (an unrecognized component directory or design-systemish dependency); don't guess, and don't fall back to a different system's styling.
 
 ## Step 2A — registered brand (shadcn)
 

@@ -17,6 +17,16 @@
  *   shadcn-bare         — shadcn + Tailwind present, no registered brand detected
  *   mui | chakra | antd | css-only | greenfield | unknown
  *
+ * "unknown" vs "css-only": these are deliberately different results. css-only means
+ * no evidence of any existing component library was found — plain CSS/native elements
+ * are a reasonable guess. unknown means there IS evidence of an existing component
+ * system (a substantial components directory, or a dependency that looks like an
+ * internal/third-party design-system package) that just isn't one this script
+ * recognizes — e.g. a client's own custom, non-shadcn component library. Collapsing
+ * that into css-only was a real bug: it told skills to fall back to plain CSS/native
+ * elements on projects that actually had their own components, silently overriding
+ * them instead of asking what they are.
+ *
  * Usage: node detect-design-system.mjs [projectRoot]
  */
 import fs from "node:fs";
@@ -84,6 +94,46 @@ function matchBrand() {
 
 const brandMatch = matchBrand();
 
+// Broader signal than the shadcn-specific uiDir above: does the project have its own
+// component directory with real content, under any common naming convention — used
+// only to avoid confidently guessing css-only when something unrecognized is there.
+const componentDirCandidates = [
+  "components", "src/components", "app/components",
+  "ui", "src/ui", "app/ui",
+  "design-system", "src/design-system",
+];
+let componentDirFound = null;
+let componentDirFileCount = 0;
+for (const dir of componentDirCandidates) {
+  if (!exists(dir)) continue;
+  try {
+    const entries = fs.readdirSync(path.join(root, dir));
+    if (entries.length > componentDirFileCount) {
+      componentDirFileCount = entries.length;
+      componentDirFound = dir;
+    }
+  } catch {
+    // ignore
+  }
+}
+const hasSubstantialComponentDir = componentDirFileCount >= 5;
+
+// A dependency name that reads like an internal or third-party design-system package,
+// not one of the libraries already recognized above.
+const KNOWN_DEP_NAMES = new Set(["@mui/material", "@chakra-ui/react", "antd", "tailwindcss"]);
+const designSystemishDep = Object.keys(deps).find((name) => {
+  if (KNOWN_DEP_NAMES.has(name)) return false;
+  const lower = name.toLowerCase();
+  return (
+    lower.includes("design-system") ||
+    lower.includes("ui-kit") ||
+    lower.includes("component-library") ||
+    /\/ui$/.test(lower) ||
+    /-ui$/.test(lower) ||
+    /-components$/.test(lower)
+  );
+});
+
 const report = [];
 report.push(`package.json: ${pkg ? "found" : "missing"}`);
 report.push(`components.json (shadcn): ${hasShadcnConfig ? "found" : "not found"}`);
@@ -99,6 +149,16 @@ report.push(
     ? `Match in ${uiDir}: brand "${brandMatch.brand.id}" (${brandMatch.found.join(", ")})`
     : `No registered brand's components found in ${uiDir || "(no ui dir)"}`
 );
+report.push(
+  componentDirFound
+    ? `Largest component directory: ${componentDirFound} (${componentDirFileCount} entries)`
+    : "No component directory found under any common naming convention"
+);
+report.push(
+  designSystemishDep
+    ? `Dependency that looks like a design-system package: ${designSystemishDep}`
+    : "No dependency name looks like a design-system package"
+);
 console.log(report.join("\n"));
 
 let result = "unknown";
@@ -112,7 +172,11 @@ if (hasShadcnConfig && hasTailwind && brandMatch) {
   result = "chakra";
 } else if (deps["antd"]) {
   result = "antd";
-} else if (!deps["@mui/material"] && !deps["@chakra-ui/react"] && !deps["antd"] && !hasShadcnConfig) {
+} else if (hasSubstantialComponentDir || designSystemishDep) {
+  // Evidence of an existing, unrecognized component system — ask, don't silently
+  // guess css-only and risk telling the agent to bypass real components.
+  result = "unknown";
+} else {
   result = "css-only";
 }
 

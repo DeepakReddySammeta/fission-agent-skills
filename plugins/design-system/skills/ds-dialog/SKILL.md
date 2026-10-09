@@ -18,7 +18,7 @@ node ../../shared/scripts/detect-design-system.mjs
 - `greenfield` → stop and ask — **confirmed failure mode to avoid**: the
   fallback here is a stock HTML `<dialog>` with zero branding, which is not
   completing the task
-- `unknown` → ask, don't guess
+- `unknown` → see `../../shared/references/unknown-system.md` — the detector's report usually already shows why (an unrecognized component directory or design-systemish dependency); don't guess, and don't fall back to a different system's styling.
 
 ## Step 2A — registered brand (shadcn)
 
