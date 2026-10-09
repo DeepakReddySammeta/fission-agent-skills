@@ -1,10 +1,10 @@
 # High-level skills — what we reuse instead of writing
 
-The component skills in `plugins/design-system/` (generic) and
-`plugins/fl-design-system/` (Fission's own setup) are the first tier:
-narrow, ours to own. There's a second tier — broader, "how to write good
-React/Next.js" type guidance — that this marketplace deliberately does
-**not** build, because maintainers already publish it.
+The component skills in `plugins/fl-design-system/` are the first tier:
+narrow, ours to own, scoped deliberately to Fission's own design system.
+There's a second tier — broader, "how to write good React/Next.js" type
+guidance — that this marketplace deliberately does **not** build, because
+maintainers already publish it.
 
 **Framework-specific upstream skills are gated, not installed by default.**
 A project only uses one or two of React/Next/Angular/Vue — installing all
@@ -41,9 +41,8 @@ This is the proposal's own three-question rule, applied:
 | Svelte/SvelteKit practices | — | **no first-party bundle found** (checked 2026-10-08); several community options exist (`spences10/skills`, `oimiragieo/agent-studio`'s `svelte-expert`, `ejirocodes/agent-skills`'s `svelte5-best-practices`) — same rule: read before installing, don't default to one. | — |
 
 None of these are mirrored into this marketplace repo. An engineer installs
-them directly from the publisher, on top of `design-system`/
-`fl-design-system`, only after `fe-upstream-setup` has confirmed which row
-actually applies:
+them directly from the publisher, on top of `fl-design-system`, only after
+`fe-upstream-setup` has confirmed which row actually applies:
 
 ```bash
 npx skills add vercel-labs/agent-skills

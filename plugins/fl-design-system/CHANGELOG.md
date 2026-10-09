@@ -1,5 +1,36 @@
 # fl-design-system changelog
 
+## 4.0.0 — 2026-10-09
+- **Direction change, per explicit instruction after the generic
+  `design-system` plugin broke on a live install**: stop trying to detect
+  and adapt to other clients' design systems. Focus on exactly one thing
+  working reliably end to end — scaffolding or installing Fission's own
+  design system, and the component skills using it correctly the moment an
+  engineer asks, with no ambiguity.
+- The 10 component skills (`fl-ds-button`, `fl-ds-input`, `fl-ds-card`,
+  `fl-ds-dialog`, `fl-ds-table`, `fl-ds-form`, `fl-ds-badge`, `fl-ds-select`,
+  `fl-ds-tabs`, `fl-ds-toast`) are back in this plugin, rewritten against a
+  much simpler detector (`detect-fission-design-system.mjs`, 3 states:
+  `ready` / `needs-setup` / `greenfield` — no MUI/Chakra/AntD/css-only/
+  unknown branching, no brand registry, no adapter files). `needs-setup` is
+  handled inline by each component skill — it installs the one component
+  needed via `install-fission-component.sh` and continues, so "add a
+  button" on a project without Fission's design system yet just works in
+  one prompt, not a stop-and-ask plus a separate setup step.
+- The generic `design-system` plugin is deleted from this marketplace
+  entirely (`brand-registries.json`, the MUI/Chakra/AntD/css-variables
+  adapters, `adapters/registries/`, `unknown-system.md`, all gone). If
+  support for other clients' own design systems comes back later, it's a
+  separate, later effort — not something bundled into this plugin's
+  component skills again by default.
+- Verified against 4 fixtures covering all three detector states
+  (`greenfield`, `needs-setup` via two different starting conditions, and
+  `ready`), plus a full relative-path audit across every skill in this
+  plugin (`detect-fission-design-system.mjs` and `install-fission-
+  component.sh` are both two levels up from every skill folder — caught
+  and fixed one more instance of the wrong depth in `fl-ds-setup`,
+  the same mistake as 3.0.1's fix, in a file rewritten fresh this round).
+
 ## 3.0.1 — 2026-10-09
 - Fixed every documented `claude plugin install fl-design-system@fission`
   command — the marketplace's real name is `fission-marketplace`, not

@@ -5,10 +5,9 @@ registry JSON ships from `public/r/`. A consumer project copies these into
 `components/ui/` via the shadcn CLI pointed at the registry URL — never via
 the bare shadcn command, which installs the unbranded default instead.
 
-This is Fission's own data — the generic `design-system` plugin's
-`shared/references/adapters/registries/fission.md` carries the same table
-for its own standalone use (so that plugin never depends on this one being
-installed). Update both if the registry's component list changes.
+Each `fl-ds-*` component skill's install command (`install-fission-component.sh`)
+reads this same component list — update this file if the registry's
+component list changes, nothing else needs to.
 
 | Component | Import path | Registry URL |
 | --- | --- | --- |
@@ -34,7 +33,7 @@ site is installable via the registry** — check `public/r/` in the upstream rep
 `accordion`, `calendar`, `slider`, `dropdown-menu`, `sheet`, and anything else
 not in the table above: `npx shadcn add <name>` with no registry URL.
 
-## Style rules (enforced by the `design-system` plugin's skills, checked again by `fl-standards` review once that bundle exists)
+## Style rules (enforced by the `fl-ds-*` skills, checked again by `fl-standards` review once that bundle exists)
 
 - No raw `<button>`, `<input>`, `<select>` in product UI.
 - No hardcoded hex colors in component files — use the token / Tailwind utility.

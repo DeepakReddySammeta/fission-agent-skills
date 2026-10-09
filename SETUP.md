@@ -2,10 +2,10 @@
 
 Repo is pushed: <https://github.com/DeepakReddySammeta/fission-agent-skills>
 (private). This is the exact sequence to get from there to "installed and
-verified working," across all three bundles. I can't run the `claude
-plugin` steps myself — this session has no `claude` CLI pointed at your
-account — so these are commands for you to run, with what each one should
-show you if it worked.
+verified working," across both bundles. I can't run the `claude plugin`
+steps myself — this session has no `claude` CLI pointed at your account —
+so these are commands for you to run, with what each one should show you
+if it worked.
 
 ## 0. Before you start
 
@@ -18,7 +18,6 @@ show you if it worked.
 
 ```bash
 claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
-claude plugin install design-system@fission-marketplace --scope user
 claude plugin install fl-design-system@fission-marketplace --scope user
 claude plugin install frontend-common@fission-marketplace --scope user
 ```
@@ -26,8 +25,8 @@ claude plugin install frontend-common@fission-marketplace --scope user
 **Check it worked**: `claude plugin list` (confirm this exact flag against
 `code.claude.com/docs/en/plugins` for your installed CLI version — the
 marketplace mechanism's command surface isn't something I can verify from
-here) should list all three plugins — `design-system` (10 skills),
-`fl-design-system` (1 skill), `frontend-common` (4 skills).
+here) should list both plugins — `fl-design-system` (11 skills: `fl-ds-setup`
+plus 10 component skills), `frontend-common` (4 skills).
 
 If this errors on the `marketplace add` step with an auth failure, it's
 almost always SSH keys — same as any private-repo clone, nothing special to
@@ -39,26 +38,30 @@ thing to check if step 4 below seems to find nothing.
 
 ## 2. Test the detectors offline (no GitHub needed, re-runs what I already verified)
 
-### 2a. Design-system detector
+### 2a. Fission design-system detector
+
+Three states only — this plugin deliberately doesn't try to detect any
+other design system:
 
 ```bash
-mkdir -p /tmp/fl-test/mui-proj && cd /tmp/fl-test/mui-proj
-echo '{ "dependencies": { "@mui/material": "^5.15.0" } }' > package.json
-mkdir src
-node <path-to-repo>/plugins/design-system/shared/scripts/detect-design-system.mjs .
-# expect last line: mui
+# greenfield: nothing scaffolded yet
+mkdir -p /tmp/fl-test/greenfield-proj
+node <path-to-repo>/plugins/fl-design-system/scripts/detect-fission-design-system.mjs /tmp/fl-test/greenfield-proj
+# expect last line: greenfield
 
-cd /tmp/fl-test && mkdir -p fission-proj/components/ui && cd fission-proj
-touch components/ui/button.tsx
-echo '{ "rsc": true }' > components.json
-echo '{ "dependencies": { "tailwindcss": "^3.4.0" } }' > package.json
-node <path-to-repo>/plugins/design-system/shared/scripts/detect-design-system.mjs .
-# expect last line: shadcn:fission
+# needs-setup: a real project exists, Fission's components aren't installed yet
+mkdir -p /tmp/fl-test/plain-proj/src
+echo '{ "dependencies": { "react": "^18.0.0" } }' > /tmp/fl-test/plain-proj/package.json
+node <path-to-repo>/plugins/fl-design-system/scripts/detect-fission-design-system.mjs /tmp/fl-test/plain-proj
+# expect last line: needs-setup
 
-cd /tmp/fl-test && mkdir -p css-proj/src && cd css-proj
-echo '{ "dependencies": { "react": "^18.0.0" } }' > package.json
-node <path-to-repo>/plugins/design-system/shared/scripts/detect-design-system.mjs .
-# expect last line: css-only
+# ready: shadcn + Tailwind + at least one Fission-owned component already present
+mkdir -p /tmp/fl-test/ready-proj/components/ui
+echo '{ "rsc": true }' > /tmp/fl-test/ready-proj/components.json
+echo '{ "dependencies": { "tailwindcss": "^3.4.0" } }' > /tmp/fl-test/ready-proj/package.json
+touch /tmp/fl-test/ready-proj/components/ui/button.tsx
+node <path-to-repo>/plugins/fl-design-system/scripts/detect-fission-design-system.mjs /tmp/fl-test/ready-proj
+# expect last line: ready
 ```
 
 ### 2b. Frontend-framework detector
@@ -98,10 +101,9 @@ npx shadcn add https://FissionHQ.github.io/ui-design-system/r/button.json
 
 **Check it worked**: a branded `button.tsx` lands in `components/ui/`, and
 it defines the `error`/`success`/`warning` variants (not stock shadcn's
-`destructive`/`ghost`/`link`). If the variant names come back different from
-what `design-system`'s `adapters/registries/fission.md` claims, that's the
-TBD flagged there — fix that file (and `fl-design-system`'s matching
-`component-catalog.md` entry), not your component.
+`destructive`/`ghost`/`link`). If the variant names come back different
+from what `fl-ds-button`'s `SKILL.md` claims, that's the TBD flagged there
+— fix that file (and `component-catalog.md`), not your component.
 
 Also sanity-check the guard rail:
 
@@ -111,23 +113,27 @@ plugins/fl-design-system/scripts/install-fission-component.sh accordion
 # accordion isn't one of the 10 Fission-owned components
 ```
 
-## 4. Test that a skill actually fires in a real session — the step that validates the whole premise
+## 4. Test the full setup-to-prompt flow in a real session — the step that validates the whole premise
 
 This is the step most likely to surface the "installed but doesn't
-auto-fire" gap raised before this round. Treat it as a real audit, not a
-formality:
+auto-fire" gap raised before this round, and the one that actually proves
+the goal this round is built around: set up Fission's design system, then
+a plain prompt uses it correctly.
 
-1. Open a real project with all three plugins installed (step 1), **in a
-   fresh session** (see the restart note above).
-2. Ask for something that should trigger exactly one skill — "add a delete
-   confirmation dialog to this page" should pull `ds-dialog`, not all ten,
-   and not zero.
-3. Confirm (via whatever this Claude Code version surfaces for active
-   skills — `/skills` or similar) that only the relevant skill loaded, and
-   that it ran the detector before suggesting any code.
-4. Repeat once in a project that already uses MUI or Chakra — the output
-   should go through that component's adapter section, not suggest
-   installing shadcn.
+1. Open a project that does **not** yet have Fission's design system
+   installed, with both plugins installed (step 1), **in a fresh session**
+   (see the restart note above).
+2. Ask for a component directly — "add a button" — without mentioning
+   setup at all. Confirm the skill that fires (`fl-ds-button`) runs the
+   detector, sees `needs-setup`, installs the component itself, and then
+   uses it — not a plain unbranded `<button>`, and not a stop-and-ask for
+   something this low-risk.
+3. Ask for a second, different component in the same project. Confirm the
+   detector now reports `ready` (since at least one Fission component is
+   already installed) and the skill goes straight to using it, no install
+   step repeated.
+4. Repeat on a project that already has Fission's design system fully set
+   up — confirm `ready` is reported immediately and no install happens.
 5. Repeat once for `fe-debug` or `fe-explore` — ask a framework-agnostic
    question ("why is this component re-rendering") and confirm one of
    `frontend-common`'s skills fires without typing `/`.
@@ -143,9 +149,7 @@ formality:
 This is the one step with no fixture I can hand you — it depends on your
 actual CLI version's UI for showing which skill fired, which I can't see
 from here. Record what you find (fires / doesn't fire / fires only on
-explicit invocation) per tool — this is the audit outcome for the
-auto-fire question raised this round, not an assumption to carry forward
-unverified.
+explicit invocation) per tool.
 
 ## 5. Cross-tool portability check
 
@@ -156,8 +160,9 @@ should block loading elsewhere. To actually confirm:
 ```bash
 # Cursor and Codex both read .agents/skills/ natively
 mkdir -p .agents/skills
-cp -r plugins/design-system/skills/ds-button .agents/skills/
-cp -r plugins/design-system/shared .agents/shared
+cp -r plugins/fl-design-system/skills/fl-ds-button .agents/skills/
+mkdir -p .agents/fl-design-system
+cp -r plugins/fl-design-system/scripts .agents/fl-design-system/scripts
 ```
 
 Open the same project in Cursor or Codex and try the same "add a button"
@@ -168,15 +173,19 @@ want a non-design-system data point too.
 ## Exit criteria for this round
 
 - [ ] `claude plugin marketplace add` resolves the repo
-- [ ] All three plugins install; 10 + 1 + 4 skills are visible
-- [ ] Each detector fixture above (design-system + frontend-framework)
-      returns the expected result
+- [ ] Both plugins install; 11 (`fl-design-system`) + 4 (`frontend-common`)
+      skills are visible
+- [ ] Each detector fixture above (Fission design-system + frontend-
+      framework) returns the expected result
 - [ ] A real `npx shadcn add .../button.json` pull succeeds from a real
-      machine, and the variant names match (or the registry adapter docs
-      get corrected to match what actually ships)
-- [ ] At least one `design-system` skill observed firing correctly inside a
-      real session, on both a Fission-native and a non-Fission (MUI/Chakra/
-      etc.) project, **without** typing `/` first
+      machine, and the variant names match (or `fl-ds-button`'s `SKILL.md`
+      gets corrected to match what actually ships)
+- [ ] On a project with no Fission design system yet, a plain "add a
+      button" prompt in a fresh session results in the design system being
+      installed and the component used correctly — **without** typing `/`
+      first, and without a separate manual setup step
+- [ ] A second component request on the same (now-`ready`) project doesn't
+      repeat the install
 - [ ] At least one `frontend-common` skill (`fe-debug`/`fe-explore`/
       `fe-knowledge-lookup`) observed firing the same way
 - [ ] `fe-upstream-setup` observed asking for confirmation before any

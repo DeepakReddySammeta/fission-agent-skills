@@ -57,7 +57,7 @@ as a bundle with the framework pick.
 ## Scope boundary
 
 This skill only gates **framework-specific** upstream installs. It has
-nothing to do with Fission's own design-system skills (`design-system` /
-`fl-design-system` plugins, which are framework-agnostic by construction)
+nothing to do with Fission's own design-system skills (the
+`fl-design-system` plugin, which is framework-agnostic by construction)
 or this plugin's own `fe-debug`/`fe-explore`/`fe-knowledge-lookup`, which
 apply regardless of framework and need no gating.

@@ -13,40 +13,27 @@ step involved (see "Install" below, one section per tool).
 This implements `Agentic_Skills_Platform_Proposal_for_Fission_Labs.docx`
 (Sep 29, 2026) — see that doc for the full business case and risk register.
 
-## What's here — three bundles, each with a different job
+## What's here — two bundles
 
 ```text
-.claude-plugin/marketplace.json        ← Claude Code marketplace manifest (3 plugins)
+.claude-plugin/marketplace.json        ← Claude Code marketplace manifest (2 plugins)
 
-plugins/design-system/                 ← generic, brand-agnostic — works on any client
-  .claude-plugin/plugin.json
-  CHANGELOG.md
-  shared/
-    scripts/detect-design-system.mjs   ← detects: a registered brand's shadcn, bare shadcn, MUI, Chakra, AntD, plain CSS, or greenfield
-    references/
-      brand-registries.json            ← table of known branded shadcn registries (ships with "fission"; add a row for another client, no code change)
-      component-catalog.md             ← what the 10 components cover, generically
-      adapters/
-        mui.md / chakra.md / antd.md / css-variables.md   ← token-mapping patterns, brand-agnostic
-        registries/fission.md          ← Fission's registry, self-contained (works even if fl-design-system isn't installed)
-        registries/README.md           ← how to register another client's own design system here
-  skills/
-    ds-button/  ds-input/  ds-card/  ds-dialog/  ds-table/
-    ds-form/    ds-badge/  ds-select/ ds-tabs/    ds-toast/     ← one SKILL.md each
-
-plugins/fl-design-system/              ← Fission's own design system, nothing else
+plugins/fl-design-system/              ← Fission's own design system, end to end
   .claude-plugin/plugin.json
   CHANGELOG.md
   references/
     fission-tokens.md                  ← Fission's token hex values, source of truth
-    component-catalog.md               ← Fission's registry URLs (its own copy of the data design-system/…/registries/fission.md also carries, kept in sync by hand)
+    component-catalog.md               ← Fission's registry URLs, one row per owned component
   scripts/
+    detect-fission-design-system.mjs   ← is Fission's design system installed in this project? ready / needs-setup / greenfield
     install-fission-component.sh       ← registry install/update, guards against non-owned names
     sync-tokens.mjs                    ← reads fission-tokens.md as a key/value map
   skills/
-    fl-ds-setup/                       ← the one skill here: scaffold a new project on Fission's design system, or install/update it into an existing shadcn project
+    fl-ds-setup/                       ← scaffold a new project on Fission's design system, or install/update it into an existing one
+    fl-ds-button/  fl-ds-input/  fl-ds-card/  fl-ds-dialog/  fl-ds-table/
+    fl-ds-form/    fl-ds-badge/  fl-ds-select/ fl-ds-tabs/    fl-ds-toast/   ← each checks the detector first, installs on the spot if needed
 
-plugins/frontend-common/               ← framework-independent, separate from both design-system bundles on purpose
+plugins/frontend-common/               ← framework-independent, unrelated to design systems
   .claude-plugin/plugin.json
   CHANGELOG.md
   scripts/detect-frontend-framework.mjs ← detects next/react/angular/vue/svelte/plain-js, for gating upstream installs — never auto-installs anything itself
@@ -60,36 +47,44 @@ UPSTREAM.md                            ← which high-level framework skills com
 SETUP.md                               ← full install-and-verify testing runbook
 ```
 
-## Why three separate bundles, not one
+## Why this is scoped to Fission's own design system only
 
-**`design-system` is generic on purpose.** Its 10 component skills
-(`ds-button`, `ds-dialog`, …) never assume Fission — they detect whatever
-design system a project already runs and adapt. Fission's own registry is
-just one entry in `brand-registries.json`, the same shape another client's
-own private registry would use. This is the bundle an engineer installs on
-*any* project, Fission-branded or not.
+An earlier round of this marketplace shipped a second, generic plugin: one
+set of component skills that detected *any* project's design system (a
+registered brand's shadcn registry, bare shadcn, MUI, Chakra, AntD, or
+plain CSS) and adapted to it, with Fission's own system as just one
+registered entry among others.
 
-**`fl-design-system` is Fission's own setup, and only that.** It has one
-skill, `fl-ds-setup`, which scaffolds a new project on Fission's design
-system or installs/updates its components into an existing shadcn project.
-Once that's run, `design-system`'s skills detect the project as
-`shadcn:fission` automatically — there's no separate "Fission Button" skill
-to invoke; `ds-button` *is* that skill, for every brand, Fission included.
-Each plugin works standalone: `design-system` never requires
-`fl-design-system` to be installed, and vice versa.
+That shipped, got installed on a real client project running its own
+custom (non-shadcn) design system, and broke: the detector's fallback logic
+silently misclassified an unrecognized component library as "no component
+library, use plain CSS" — which actively told the agent to bypass the
+client's real components on part of the work, while other parts (handled
+by reading existing code directly) came out fine. Generic, heuristic
+detection across arbitrary, never-seen design systems wasn't reliable
+enough to trust.
 
-**`frontend-common` is a third, separate folder — not a subfolder of either
-design-system bundle.** Debugging, codebase exploration, and knowledge
-lookup aren't a design-system concern at all; they apply to any frontend
-work regardless of what UI library is in play. Keeping them in their own
-plugin means a project that only needs `design-system` doesn't pull in
-unrelated skills, and vice versa. This bundle also owns the one piece of
+Direction now: drop the generic layer, and make **one thing** work
+reliably end to end — scaffolding or installing Fission's own design
+system in a project, and then every component skill (`fl-ds-button`,
+`fl-ds-dialog`, …) working correctly the moment an engineer asks for that
+component, with no ambiguity about which system is in play. Each skill
+checks `detect-fission-design-system.mjs` first; if Fission's system isn't
+installed yet, it installs the one component needed and continues, rather
+than falling back to an unbranded element or guessing at a different
+system. Supporting other clients' own design systems again, if it comes
+back, is a separate, later effort — not something this bundle's component
+skills try to also handle today.
+
+`frontend-common` is unrelated to any of this — debugging, codebase
+exploration, and knowledge lookup apply to any frontend work regardless of
+which UI library is in play, which is why it's a separate plugin rather
+than folded into the design-system one. It also owns the one piece of
 process this repo enforces: before recommending or installing any
 framework-specific upstream skill (React/Next/Angular/Vue practices from
 Vercel/TanStack/etc. — see `UPSTREAM.md`), its `fe-upstream-setup` skill
 detects the project's actual framework(s) and requires the engineer's
-explicit confirmation first, so a project never ends up with every
-framework's skills loaded "just in case."
+explicit confirmation first.
 
 Framework-level skills (how to write good React, Next.js composition
 patterns, Angular/Vue equivalents) are not written in this repo at all —
@@ -97,19 +92,14 @@ see `UPSTREAM.md` for why, and for what's installed from upstream instead.
 
 ## Install
 
-Pick the section for whichever tool you use. All three bundles can be
-installed independently — install only what a given project actually
-needs (e.g. `design-system` alone for a non-Fission client project).
-
 ### Claude Code
 
 Two commands, run once per machine, via the marketplace manifest:
 
 ```bash
 claude plugin marketplace add https://github.com/DeepakReddySammeta/fission-agent-skills.git
-claude plugin install design-system@fission-marketplace --scope user
-claude plugin install fl-design-system@fission-marketplace --scope user   # only if this machine touches Fission-branded projects
-claude plugin install frontend-common@fission-marketplace --scope user
+claude plugin install fl-design-system@fission-marketplace --scope user
+claude plugin install frontend-common@fission-marketplace --scope user   # optional, unrelated to design systems
 ```
 
 - **What each line does**: the first registers this repo as a plugin
@@ -120,8 +110,9 @@ claude plugin install frontend-common@fission-marketplace --scope user
 - **Where to run it**: anywhere — this isn't tied to being inside a
   project directory. A fresh terminal, before opening any client project,
   is the normal time to do this once.
-- **Check it worked**: `claude plugin list` should show all three plugins
-  you installed, each with its skills listed underneath.
+- **Check it worked**: `claude plugin list` should show both plugins you
+  installed, each with its skills listed underneath (`fl-design-system`:
+  11 skills; `frontend-common`: 4 skills).
 - **Important**: a Claude Code session already running when you install a
   plugin will not pick it up — start a new `claude` session (or restart
   the current one) before expecting a skill to fire. This is the single
@@ -141,17 +132,13 @@ copy works for either:
 # from inside the project where you want these skills available
 mkdir -p .agents/skills
 
-# design-system (generic component skills) — repeat the cp line per skill you need, or copy the whole skills/ dir
-cp -r <path-to-this-repo>/plugins/design-system/skills/. .agents/skills/
-cp -r <path-to-this-repo>/plugins/design-system/shared .agents/shared
-
-# fl-design-system (only on a Fission-branded project)
+# fl-design-system
 cp -r <path-to-this-repo>/plugins/fl-design-system/skills/. .agents/skills/
 mkdir -p .agents/fl-design-system
 cp -r <path-to-this-repo>/plugins/fl-design-system/references .agents/fl-design-system/references
 cp -r <path-to-this-repo>/plugins/fl-design-system/scripts .agents/fl-design-system/scripts
 
-# frontend-common
+# frontend-common (optional, unrelated to design systems)
 cp -r <path-to-this-repo>/plugins/frontend-common/skills/. .agents/skills/
 mkdir -p .agents/frontend-common
 cp -r <path-to-this-repo>/plugins/frontend-common/scripts .agents/frontend-common/scripts
@@ -159,16 +146,13 @@ cp -r <path-to-this-repo>/plugins/frontend-common/scripts .agents/frontend-commo
 
 - **What this does**: every skill in this repo sits two levels below its
   plugin's root (`plugins/<plugin-name>/skills/<skill-name>/SKILL.md`) and
-  references its shared data two levels up (`../../shared/...` for
-  `design-system`, `../../references/...` and `../../scripts/...` for
-  `fl-design-system`, `../../scripts/...` for `frontend-common`). The copy
-  recipe above preserves that exact depth: `.agents/skills/<skill-name>/`
-  is also two levels below `.agents/`, so copying each plugin's shared data
-  straight to `.agents/shared/`, `.agents/fl-design-system/`, and
-  `.agents/frontend-common/` (as shown above, not nested any deeper) keeps
-  every `../../...` reference resolving correctly with no edits to any
-  `SKILL.md` needed. If you lay the folders out differently, the thing to
-  preserve is that two-levels-up depth, not the exact folder names.
+  references its scripts/references two levels up (`../../scripts/...`,
+  `../../references/...`). The copy recipe above preserves that exact
+  depth: `.agents/skills/<skill-name>/` is also two levels below
+  `.agents/`, so copying each plugin's `references/`/`scripts/` straight to
+  `.agents/fl-design-system/` and `.agents/frontend-common/` (not nested
+  any deeper) keeps every `../../...` reference resolving correctly with
+  no edits to any `SKILL.md` needed.
 - **Where to run it**: inside the specific project's own working copy —
   this is a per-project copy, not a per-machine install like Claude Code's
   plugin mechanism. Repeat it for each project that needs these skills, or
@@ -176,13 +160,13 @@ cp -r <path-to-this-repo>/plugins/frontend-common/scripts .agents/frontend-commo
 - **Check it worked**: run a smoke test on the detector before trusting
   anything else —
   ```bash
-  node .agents/skills/ds-button/../../shared/scripts/detect-design-system.mjs
+  node .agents/skills/fl-ds-button/../../fl-design-system/scripts/detect-fission-design-system.mjs
   ```
   If this errors on a path, the copy didn't preserve the relative depth —
   re-check the folder structure above.
 - **Verify the skill actually fires**: open the project in Cursor or Codex
   and ask for something that should trigger exactly one skill (e.g. "add a
-  delete confirmation dialog" → `ds-dialog`). If nothing fires, see
+  delete confirmation dialog" → `fl-ds-dialog`). If nothing fires, see
   "If a skill doesn't auto-fire" below before assuming the copy is wrong.
 
 ### GitHub Copilot / VS Code
@@ -206,10 +190,10 @@ to do anything pasted into a plain chat window.
 Two ways, same as any Agent Skill:
 
 1. **Automatic** — the agent loads a skill on its own when the work
-   matches its `description`. Writing a dialog pulls `ds-dialog` without
+   matches its `description`. Writing a dialog pulls `fl-ds-dialog` without
    anyone typing a command.
-2. **Explicit** — invoke one directly, e.g. `/design-system:ds-button` in
-   Claude Code (exact invocation syntax depends on the tool).
+2. **Explicit** — invoke one directly, e.g. `/fl-design-system:fl-ds-button`
+   in Claude Code (exact invocation syntax depends on the tool).
 
 ### If a skill doesn't auto-fire
 
@@ -227,13 +211,13 @@ installation alone means a skill is live. Check, in order:
    and confirm the frontmatter parses (`name` + `description`, nothing
    malformed) — a YAML error in frontmatter can make a skill silently
    invisible rather than erroring loudly.
-4. **Try an explicit invocation first.** If `/design-system:ds-button`
-   works but the same prompt without `/` doesn't trigger it, the skill
-   content is fine and the gap is specifically in automatic
-   description-matching — narrow the ask (mention the component by name,
-   e.g. "add a Dialog" rather than "add a popup thing") and see if that's
-   enough; if it still doesn't fire unprompted, that's the bug to report,
-   not a doc gap.
+4. **Try an explicit invocation first.** If
+   `/fl-design-system:fl-ds-button` works but the same prompt without `/`
+   doesn't trigger it, the skill content is fine and the gap is
+   specifically in automatic description-matching — narrow the ask
+   (mention the component by name, e.g. "add a Dialog" rather than "add a
+   popup thing") and see if that's enough; if it still doesn't fire
+   unprompted, that's the bug to report, not a doc gap.
 5. **Check for a context budget problem.** If many plugins/skills are
    installed at once, descriptions can get crowded out of what the model
    sees every turn (see the proposal's "one design constraint" section) —

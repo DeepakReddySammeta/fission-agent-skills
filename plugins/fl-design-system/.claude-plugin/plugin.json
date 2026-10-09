@@ -1,7 +1,7 @@
 {
   "name": "fl-design-system",
-  "version": "3.0.1",
-  "description": "Fission's own design system — scaffold a brand-new project on it, or install/update its branded shadcn components into an existing one. Pairs with the generic `design-system` plugin: once this has run, ds-button/ds-dialog/etc. detect this project as `shadcn:fission` automatically and route to it. Also holds Fission's token values and registry catalog, which `design-system`'s adapters read when mapping Fission's brand onto MUI/Chakra/AntD/plain CSS.",
+  "version": "4.0.0",
+  "description": "Fission's own design system, end to end: fl-ds-setup scaffolds a brand-new project on it or installs/updates its branded shadcn components into an existing one, and ten component skills (fl-ds-button, fl-ds-input, fl-ds-card, fl-ds-dialog, fl-ds-table, fl-ds-form, fl-ds-badge, fl-ds-select, fl-ds-tabs, fl-ds-toast) each check it's installed before using it, installing it on the spot if not. Scoped deliberately to Fission's own system only — no generic multi-brand detection.",
   "author": {
     "name": "Fission Labs Platform Team",
     "email": "platform-skills@fissionlabs.com"
@@ -18,5 +18,5 @@
       "registryBase": "https://FissionHQ.github.io/ui-design-system/r/"
     }
   },
-  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). The 'skills' array is intentionally omitted: it only adds to the default skills/ scan and fl-ds-setup already lives under skills/, so listing it was redundant. 'owners' and 'upstream' moved under 'metadata' — neither is a recognized top-level field and both would otherwise be silently stripped with a validate warning; 'metadata' is the documented place for free-form data Claude Code doesn't read."
+  "_schema_note": "Verified against https://code.claude.com/docs/en/plugins/manifest-reference (checked 2026-10-09). No 'skills' array: the standard skills/ directory scan already covers all 11 skills here, and an explicit array only adds to that scan, so it would be a redundant hand-maintained duplicate."
 }
