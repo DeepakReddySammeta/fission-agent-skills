@@ -29,7 +29,7 @@ plugins/fl-design-system/              ← Fission's own design system, end to e
     install-fission-component.sh       ← registry install/update, guards against non-owned names
     sync-tokens.mjs                    ← reads fission-tokens.md as a key/value map
   skills/
-    fl-ds-new-project/                 ← starting from scratch: asks which framework, states what Fission's design system actually supports
+    fl-ds-new-project/                 ← starting from scratch: scaffolds any framework/styling combo, asks about Fission only when it actually applies
     fl-ds-setup/                       ← scaffold a new Next.js project on Fission's design system, or install/update it into an existing one
     fl-ds-button/  fl-ds-input/  fl-ds-card/  fl-ds-dialog/  fl-ds-table/
     fl-ds-form/    fl-ds-badge/  fl-ds-select/ fl-ds-tabs/    fl-ds-toast/   ← each checks the detector first, installs on the spot if needed
@@ -76,6 +76,16 @@ than falling back to an unbranded element or guessing at a different
 system. Supporting other clients' own design systems again, if it comes
 back, is a separate, later effort — not something this bundle's component
 skills try to also handle today.
+
+One distinction worth being precise about: `fl-ds-new-project` *does*
+scaffold projects on other frameworks and styling systems (Vue, Angular,
+MUI, Bootstrap, …) when asked — that's not the same risk as before. The
+thing that broke was *silently guessing* which system an **existing**,
+unfamiliar project already used. Scaffolding a **brand-new** project in
+whatever the engineer *explicitly names* involves no guessing at all —
+Fission's design system is only ever offered as an explicit extra step on
+top, never assumed, and the `fl-ds-*` component skills still only ever
+know how to use Fission's own components.
 
 `frontend-common` is unrelated to any of this — debugging, codebase
 exploration, and knowledge lookup apply to any frontend work regardless of

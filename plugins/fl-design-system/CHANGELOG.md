@@ -1,5 +1,26 @@
 # fl-design-system changelog
 
+## 4.2.0 — 2026-10-09 (later same day)
+- Broadened `fl-ds-new-project`, per direction: it's no longer a Fission-
+  or-nothing gate. It now helps scaffold a brand-new project in *any*
+  framework (Next.js, React, Vue, Angular, Astro, …) and *any* styling
+  system (Tailwind, shadcn, MUI, Bootstrap, Chakra, Ant Design, plain
+  CSS/Sass, …) the engineer picks — framework and styling are asked as two
+  separate, unfiltered questions. Only after scaffolding, and only when
+  the chosen framework+styling combination actually supports Fission's
+  design system, does it ask whether to also set that up; a "no" or an
+  unsupported combination just leaves the project as scaffolded, no
+  Fission skill involved.
+- This isn't a return to the generic multi-brand detection that broke
+  before (see 4.0.0) — that was *silently guessing* an existing, unknown
+  project's design system. This is scaffolding a *brand-new* project in
+  whatever the engineer *explicitly names*, which involves no guessing.
+  The `fl-ds-*` component skills still only ever know Fission's own
+  components; README's scope section now spells out this distinction
+  explicitly so it doesn't read as a contradiction later.
+- Still hands off to `fl-ds-setup` for the actual Fission scaffold/install
+  once confirmed, rather than duplicating that logic.
+
 ## 4.1.0 — 2026-10-09
 - Added `fl-ds-new-project`: the entry point for a brand-new project where
   the framework hasn't been decided yet. Shows a plain support table

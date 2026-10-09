@@ -12,8 +12,8 @@
     {
       "name": "fl-design-system",
       "source": "./plugins/fl-design-system",
-      "description": "Fission's own design system, end to end — fl-ds-new-project asks which framework and states clearly which ones are actually supported, fl-ds-setup scaffolds or installs it once that's settled, and ten component skills (fl-ds-button, fl-ds-dialog, ...) each check it's installed before using it. Scoped to Fission's own system only.",
-      "version": "4.1.0"
+      "description": "Fission's own design system, end to end — fl-ds-new-project scaffolds a new project in whatever framework and styling the engineer picks, then asks about Fission's design system only when that choice actually supports it; fl-ds-setup scaffolds or installs it once confirmed, and ten component skills (fl-ds-button, fl-ds-dialog, ...) each check it's installed before using it. Scoped to Fission's own system only.",
+      "version": "4.2.0"
     },
     {
       "name": "frontend-common",

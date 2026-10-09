@@ -1,59 +1,102 @@
 ---
 name: fl-ds-new-project
-description: Use when starting a brand-new project from scratch and the framework or library hasn't been decided yet, or when asked to scaffold a new app without a framework already named. Asks which framework, states plainly which ones Fission's design system currently supports, and only wires up Fission's components for a supported choice.
+description: Use when starting a brand-new project from scratch and the framework and/or styling approach haven't been decided yet. Scaffolds the project in whatever framework (Next.js, React, Vue, Angular, Astro, etc.) and styling system (Tailwind, shadcn, Material UI, Bootstrap, Chakra, Ant Design, plain CSS/Sass, etc.) the engineer picks — then, only when that choice actually supports Fission's design system, asks whether to also set it up, and only then hands off to Fission's own skills.
 ---
 
-# New project — which framework, and does Fission's design system apply
+# New project — framework, styling, and (only if it applies) Fission's design system
 
-Don't scaffold anything yet, and don't assume Next.js. Ask which
-framework or library this new project will use, and show the real support
-picture so the choice is informed — don't silently narrow the options to
-only what's supported; let the engineer see the full picture and decide.
+Three separate questions — don't collapse them into one, and don't skip
+straight to Fission:
 
-## Step 1 — show this, then ask
+1. What framework?
+2. What styling / component system?
+3. *(Only if 1 and 2 make it possible)* — do you want Fission's design
+   system too?
 
-| Framework | Fission's design system | What happens if chosen |
+Scaffolding happens regardless of whether Fission applies. This skill helps
+set up a new project either way — Fission is an optional layer on top, only
+when it's actually compatible, never the default assumption.
+
+## Step 1 — ask the framework
+
+Ask which framework or library this project uses. Any answer is valid —
+Next.js, React (Vite/CRA), Vue, Angular, Astro, Svelte, or something else.
+Don't pre-filter the menu to only what Fission supports; the engineer
+should see the real, full choice.
+
+## Step 2 — ask the styling / component system
+
+Ask which CSS or component library this project should use: plain CSS,
+Sass/SCSS, Tailwind CSS, shadcn/ui, Material UI (MUI), Bootstrap, Chakra
+UI, Ant Design, or something else. Same rule as Step 1 — this question is
+independent of Fission entirely, don't narrow it.
+
+## Step 3 — scaffold with that framework's own official tooling
+
+Prefer each framework's own, currently-documented scaffolding command over
+a hand-rolled one — these tools change their flags and prompts over time,
+so verify against current docs rather than trusting the table below
+verbatim if it's been a while. As of this writing, the usual entry points:
+
+| Framework | Scaffold command | Adding a styling system |
 | --- | --- | --- |
-| **Next.js** | ✅ Fully supported — dedicated starter template | Scaffolds Fission's actual starter project (gallery + dashboard demo), ready immediately |
-| **React** (Vite, CRA, etc.) | ⚠️ Partially supported — no dedicated starter, but the components install manually | Scaffolds a plain React project with standard tooling, then installs Tailwind + shadcn + Fission's components into it |
-| **Vue** | ❌ Not supported | Fission's components are built on shadcn/Radix, which is a React-only pattern — they cannot be used in a Vue project at all. Not a gap to close later without rebuilding the component library itself in Vue |
-| **Angular** | ❌ Not supported | Same reason as Vue — architecturally incompatible, not just unimplemented |
-| **Svelte / SolidJS / etc.** | ❌ Not supported | Same reason |
-| **Astro** | ❌ Not supported (unverified) | Possible in principle via Astro's React islands, but nobody has tried or documented it here — treat as unsupported until someone verifies and writes it up, don't guess that it works |
+| Next.js | `npx create-next-app@latest <name>` | Its own setup prompt offers Tailwind directly; for MUI/Bootstrap/Chakra/AntD, scaffold plain and then follow that library's own Next.js install guide |
+| React (Vite) | `npm create vite@latest <name> -- --template react-ts` | Add Tailwind/MUI/Bootstrap/Chakra/AntD afterward, per that library's own Vite install guide |
+| Vue | `npm create vue@latest <name>` | Its own setup prompt offers common options; otherwise per that library's own Vue install guide |
+| Angular | `ng new <name> --style=<css\|scss\|sass\|less>` | `ng add @angular/material` for Material; other libraries per their own Angular install guide |
+| Astro | `npm create astro@latest <name>` | `astro add tailwind` (official integration); other libraries per their own Astro install guide |
 
-Keep this table in sync with reality, not the other way around — if
-Fission's upstream repo (`FissionHQ/ui-design-system`) ever adds another
-template or official framework support, update this table (and
-`fl-ds-setup`'s Step 2) to match, rather than leaving this skill telling
-engineers something that's gone stale.
+Scaffold first, confirm it actually ran (the folder exists, `package.json`
+has the expected dependency) before moving to Step 4 — don't ask about
+Fission against a scaffold that silently failed.
 
-## Step 2 — branch on the answer
+## Step 4 — does Fission's design system even apply here
 
-- **Next.js** → hand off to `fl-ds-setup`'s Step 2 (the actual git clone +
-  `npm run create` scaffold). Don't duplicate that command here — invoke
-  that skill's logic.
-- **React (Vite/CRA/etc.)** → scaffold with standard tooling first, e.g.:
-  ```bash
-  npm create vite@latest <target-dir> -- --template react-ts
-  ```
-  Then hand off to `fl-ds-setup`'s Step 3 (install Fission's components
-  into the now-existing project) — the shadcn CLI sets up `components.json`
-  and Tailwind on its own first run.
-- **Anything not supported** (Vue, Angular, Svelte, Astro, …) — Fission's
-  design system doesn't apply here at all. Ask the engineer directly which
-  they'd rather do instead of guessing:
-  - Scaffold the project with that framework's own standard tooling, no
-    Fission components, nothing further from this plugin; or
-  - Switch to a supported framework (Next.js or React) instead.
-  Don't silently scaffold nothing, and don't silently force Next.js on
-  someone who asked for Vue.
+Only ask this if **both** hold:
+
+- **Framework** is Next.js (fully supported, dedicated starter) or plain
+  React (partially supported, components install manually). Anything else
+  — Vue, Angular, Svelte, SolidJS, etc. — is architecturally incompatible
+  with Fission's shadcn/Radix-based components, full stop; don't ask, say
+  so in one line and move on. Astro is unverified, not confirmed either
+  way — treat it as "don't ask" until someone actually tries it and writes
+  up the result.
+- **Styling choice** is Tailwind or shadcn/ui, or genuinely still open. If
+  the engineer explicitly chose MUI, Bootstrap, Chakra, or Ant Design in
+  Step 2, Fission's components don't layer onto that cleanly — tell them
+  plainly (same reasoning as `fl-ds-setup`'s "if the project already runs
+  a different full component library" note) and ask whether they'd rather
+  drop that library in favor of Fission's, or keep it and skip Fission.
+  Don't silently install Fission's components alongside a different
+  library already chosen on purpose.
+
+If both hold, ask directly: **"This project can run Fission's design
+system — do you want to set it up?"**
+
+- **Yes** → hand off to `fl-ds-setup`:
+  - Next.js → its Step 2, the real Fission starter scaffold. This
+    generally *replaces* the generic Step 3 scaffold above, since Fission's
+    own starter is richer (branded components, demo pages) than a bare
+    `create-next-app` output — don't keep both.
+  - React → its Step 3, installing Fission's components into the project
+    Step 3 above already created.
+- **No** → stop here. The project stays exactly as scaffolded in Step 3,
+  with whatever styling was chosen, and no Fission skill gets involved.
+- **Didn't qualify** (wrong framework, or a conflicting styling library
+  already chosen on purpose) → don't ask at all. State in one line that
+  Fission's design system doesn't apply here and why, then stop.
+
+## Step 5 — once Fission is confirmed, say what changes
+
+Tell the engineer plainly: from here on, asking for a Button, Dialog,
+Card, and so on will route through the `fl-ds-*` component skills (which
+check Fission's install state themselves and install on demand), not
+generic components — that's the actual point of having confirmed this.
 
 ## Scope boundary
 
-This skill only decides which framework and whether Fission's design
-system applies to it. Once that's settled for a supported choice,
-`fl-ds-setup` does the actual scaffold/install work — this skill hands off
-rather than re-implementing those steps. For an existing project that
-already has a framework decided (and just needs Fission's components
-installed or updated), go straight to `fl-ds-setup` — this skill is for
-the "nothing exists yet, what should it even be" moment only.
+This skill owns the framework + styling + Fission-applicability decision
+and the initial scaffold. Once Fission is confirmed, `fl-ds-setup` and the
+`fl-ds-*` component skills take over entirely — don't duplicate their
+logic here, and don't keep asking about Fission on later prompts once
+Step 4 has already been answered for this project.

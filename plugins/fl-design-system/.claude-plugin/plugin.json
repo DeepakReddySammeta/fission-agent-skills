@@ -1,7 +1,7 @@
 {
   "name": "fl-design-system",
-  "version": "4.1.0",
-  "description": "Fission's own design system, end to end: fl-ds-new-project asks which framework a brand-new project should use and states plainly which ones Fission's design system actually supports (Next.js, fully; React, partially; Vue/Angular/etc., not at all — they're architecturally incompatible with shadcn/Radix). fl-ds-setup then scaffolds or installs/updates it once the framework is settled, and ten component skills (fl-ds-button, fl-ds-input, fl-ds-card, fl-ds-dialog, fl-ds-table, fl-ds-form, fl-ds-badge, fl-ds-select, fl-ds-tabs, fl-ds-toast) each check it's installed before using it, installing it on the spot if not. Scoped deliberately to Fission's own system only — no generic multi-brand detection.",
+  "version": "4.2.0",
+  "description": "Fission's own design system, end to end: fl-ds-new-project scaffolds a brand-new project in whatever framework and styling system the engineer picks (Next.js, React, Vue, Angular, Astro; Tailwind, shadcn, MUI, Bootstrap, Chakra, Ant Design, plain CSS/Sass) — then, only when that choice actually supports Fission's design system (Next.js fully, React partially; Vue/Angular/etc. not at all, architecturally incompatible with shadcn/Radix), asks whether to set it up too. fl-ds-setup then scaffolds or installs/updates it once confirmed, and ten component skills (fl-ds-button, fl-ds-input, fl-ds-card, fl-ds-dialog, fl-ds-table, fl-ds-form, fl-ds-badge, fl-ds-select, fl-ds-tabs, fl-ds-toast) each check it's installed before using it, installing it on the spot if not. Fission's own system stays scoped and deliberate — no generic multi-brand component detection.",
   "author": {
     "name": "Fission Labs Platform Team",
     "email": "platform-skills@fissionlabs.com"
