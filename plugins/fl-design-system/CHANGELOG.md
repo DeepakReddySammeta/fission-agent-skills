@@ -1,5 +1,24 @@
 # fl-design-system changelog
 
+## 4.2.1 — 2026-10-09 (real UI bug, caught from a live screenshot)
+- Fixed a real UX bug in `fl-ds-new-project`, caught from an actual
+  screenshot of the skill running in VS Code's Claude Code extension:
+  Fission's design system was being rendered as a parenthetical under the
+  "Tailwind CSS" option ("pairs well with Fission's design system if
+  applicable") instead of its own selectable choice, so an engineer
+  wanting Fission directly had nothing to click — they'd have had to pick
+  Tailwind first and wait for a separate follow-up question that the 4.2.0
+  design only asked *after* scaffolding.
+- Fix: Step 2's styling menu now lists "Fission's Design System" as
+  option 1, on equal footing with Tailwind/shadcn/plain CSS/MUI-Bootstrap-
+  Chakra-AntD, whenever the chosen framework (Next.js or React) actually
+  supports it — selectable in the same single menu, no second question
+  required. For any other framework, Fission is left off the list
+  entirely rather than appearing as an option that then gets refused.
+- Removed the old separate "ask after scaffolding" step — if the engineer
+  didn't pick Fission in the one menu where it was offered directly,
+  don't ask again afterward.
+
 ## 4.2.0 — 2026-10-09 (later same day)
 - Broadened `fl-ds-new-project`, per direction: it's no longer a Fission-
   or-nothing gate. It now helps scaffold a brand-new project in *any*
