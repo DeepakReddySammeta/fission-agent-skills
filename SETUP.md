@@ -124,38 +124,52 @@ a plain prompt uses it correctly.
 1. Open a completely empty folder (no `package.json` at all), with both
    plugins installed (step 1), **in a fresh session** (see the restart
    note above). Ask for a brand-new project without naming a framework —
-   "set up a new project" or similar. Confirm `fl-ds-new-project` fires,
-   shows the framework support table, and actually waits for an answer
-   rather than defaulting to Next.js unprompted.
-2. Answer "Next.js" and confirm it hands off to `fl-ds-setup`'s Step 2 (the
-   real scaffold command runs, not a re-explanation of the same table).
-   Separately, try answering "Vue" in a different empty folder and confirm
-   it refuses clearly (no Fission install attempted) rather than silently
-   proceeding or silently doing nothing.
-3. Open a project that does **not** yet have Fission's design system
+   "set up a new project" or similar. Confirm `fl-ds-new-project` fires
+   and asks which framework **as an open question** — it should not
+   pre-filter to only Fission-supported options.
+2. Answer "Next.js", then confirm Step 2's styling question lists
+   **"Fission's Design System" as its own directly selectable numbered
+   option**, on equal footing with Tailwind/shadcn/plain CSS/MUI/
+   Bootstrap/Chakra/AntD — not buried as a parenthetical under one of the
+   other options (this was a real bug, caught from an actual VS Code
+   session: Fission only showed up as a footnote under "Tailwind CSS",
+   so there was nothing to select directly). Choosing it should hand off
+   straight to `fl-ds-setup`'s Step 2, no separate confirmation question
+   after the fact.
+3. In a different empty folder, answer "Vue" to the framework question.
+   Confirm the styling question's list **does not mention Fission at
+   all** (not a refusal message — Fission simply isn't an option), and
+   that it scaffolds plain Vue with whatever styling is picked, no
+   Fission skill ever invoked.
+4. In a third empty folder, answer "Next.js" then pick a non-Fission
+   styling option (e.g. "Tailwind CSS" or "Material UI") deliberately.
+   Confirm it scaffolds that combination and does **not** re-ask about
+   Fission afterward — the engineer already had the direct option in the
+   same menu and chose something else.
+5. Open a project that does **not** yet have Fission's design system
    installed, with both plugins installed, **in a fresh session**.
-4. Ask for a component directly — "add a button" — without mentioning
+6. Ask for a component directly — "add a button" — without mentioning
    setup at all. Confirm the skill that fires (`fl-ds-button`) runs the
    detector, sees `needs-setup`, installs the component itself, and then
    uses it — not a plain unbranded `<button>`, and not a stop-and-ask for
    something this low-risk.
-5. Ask for a second, different component in the same project. Confirm the
+7. Ask for a second, different component in the same project. Confirm the
    detector now reports `ready` (since at least one Fission component is
    already installed) and the skill goes straight to using it, no install
    step repeated.
-6. Repeat on a project that already has Fission's design system fully set
+8. Repeat on a project that already has Fission's design system fully set
    up — confirm `ready` is reported immediately and no install happens.
-7. Repeat once for `fe-debug` or `fe-explore` — ask a framework-agnostic
+9. Repeat once for `fe-debug` or `fe-explore` — ask a framework-agnostic
    question ("why is this component re-rendering") and confirm one of
    `frontend-common`'s skills fires without typing `/`.
-8. **If nothing fires unprompted but an explicit `/plugin:skill` invocation
-   works**, that confirms the skill content is fine and isolates the gap
-   to automatic description-matching specifically — report that distinction
-   rather than "skills don't work," since the fix differs (a session/cache
-   issue vs. a description-wording issue).
-9. **If an explicit invocation also does nothing**, check `claude plugin
-   list` again — the plugin may have installed in a disabled state, or the
-   session genuinely predates the install (see step 1's restart note).
+10. **If nothing fires unprompted but an explicit `/plugin:skill` invocation
+    works**, that confirms the skill content is fine and isolates the gap
+    to automatic description-matching specifically — report that distinction
+    rather than "skills don't work," since the fix differs (a session/cache
+    issue vs. a description-wording issue).
+11. **If an explicit invocation also does nothing**, check `claude plugin
+    list` again — the plugin may have installed in a disabled state, or the
+    session genuinely predates the install (see step 1's restart note).
 
 This is the one step with no fixture I can hand you — it depends on your
 actual CLI version's UI for showing which skill fired, which I can't see
@@ -189,10 +203,17 @@ want a non-design-system data point too.
 - [ ] Each detector fixture above (Fission design-system + frontend-
       framework) returns the expected result
 - [ ] `fl-ds-new-project` fires on an empty folder with no framework named,
-      shows the support table, and waits for an answer rather than
-      defaulting to Next.js
-- [ ] A "Vue" answer to `fl-ds-new-project` is refused clearly, with no
-      Fission install attempted
+      and asks the framework as an open question rather than defaulting to
+      Next.js or pre-filtering to only Fission-supported options
+- [ ] On "Next.js", the styling question lists "Fission's Design System"
+      as its own directly selectable numbered option — not buried as a
+      parenthetical under Tailwind or anything else — and choosing it
+      hands off straight to `fl-ds-setup` with no extra confirmation step
+- [ ] On "Vue", the styling question never mentions Fission at all, and
+      a plain Vue project gets scaffolded with no Fission skill invoked
+- [ ] On "Next.js" + a non-Fission styling choice (Tailwind, MUI, etc.),
+      it scaffolds that combination and does not re-ask about Fission
+      afterward
 - [ ] A real `npx shadcn add .../button.json` pull succeeds from a real
       machine, and the variant names match (or `fl-ds-button`'s `SKILL.md`
       gets corrected to match what actually ships)
