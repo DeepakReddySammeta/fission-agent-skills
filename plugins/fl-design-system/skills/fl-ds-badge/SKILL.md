@@ -29,19 +29,27 @@ import { Badge } from "@/components/ui/badge";
 <Badge variant="default">Default</Badge>
 <Badge variant="secondary">Secondary</Badge>
 <Badge variant="outline">Draft</Badge>
-<Badge variant="error">Failed</Badge>
+<Badge variant="destructive">Failed</Badge>
 <Badge variant="success">Active</Badge>
 <Badge variant="warning">Pending review</Badge>
 ```
 
-Shares its variant set with Button on Fission's system — `Default,
-Secondary, Outline, Error, Success, Warning` — see `fl-ds-button` for the
-confirmed/inferred detail on that naming.
+**Confirmed by reading the actual installed component source
+(`components/ui/badge.tsx`) from a real scaffold on 2026-10-09**:
+`default`, `secondary`, `destructive`, `outline`, `success`, `warning`.
+Badge's danger variant is `destructive`, same name as Button's — but
+Badge does **not** otherwise share Button's variant set: Badge has
+`success`/`warning` (Button doesn't), and Button has `ghost`/`link`
+(Badge doesn't). Treat them as two separate variant sets that happen to
+overlap on `default`/`secondary`/`outline`/`destructive`, not one shared
+set — an earlier version of this file claimed otherwise, inferred from
+naming rather than read from source.
 
 Use `../../scripts/install-fission-component.sh badge --overwrite` to pull
 an update if the installed component looks stale.
 
 ## Scope boundary
 
-Badge/status-chip only. For the button-style action variants this shares
-with, see `fl-ds-button`.
+Badge/status-chip only. For the button-style variants Badge partially
+overlaps with, see `fl-ds-button` — but check that skill's own variant
+list rather than assuming it matches this one.

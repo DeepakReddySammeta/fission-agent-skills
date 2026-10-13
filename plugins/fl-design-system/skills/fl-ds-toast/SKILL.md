@@ -33,8 +33,20 @@ import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 const { toast } = useToast();
 toast({ title: "Saved", description: "Your changes were saved." });
-toast({ title: "Something went wrong", variant: "error" });
+toast({ title: "Something went wrong", variant: "destructive" });
 ```
+
+**Unverified, flag before trusting**: a real scaffold on 2026-10-09
+installed only one file, `components/ui/toast.tsx` — not the three files
+(`toast.tsx` + `toaster.tsx` + `use-toast.tsx`) the import paths above
+assume. That could mean the actual API differs from stock shadcn's toast
+(e.g. a single-file or `sonner`-based setup, which uses a different
+`toast()` import and no `useToast()` hook at all). Read the real
+`toast.tsx` in the target project before using this skill, and correct
+this file via PR once confirmed — don't assume the imports above are
+right just because they're stock shadcn's usual shape. The `destructive`
+variant name above is inferred from Button/Badge's confirmed convention,
+not read from this component's source either.
 
 A single `<Toaster />` mounted once near the app root is enough — don't
 mount a second one per page.

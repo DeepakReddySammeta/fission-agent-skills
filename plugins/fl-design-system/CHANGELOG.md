@@ -1,5 +1,44 @@
 # fl-design-system changelog
 
+## 4.2.2 — 2026-10-09 (real component API corrections, from an actual scaffold)
+- Ran `fl-ds-setup`'s Step 2 for real (a live headless Claude Code session,
+  not a fixture) and read the actual files it produced. Found two real,
+  confirmed-wrong claims in the docs that had been "confirmed from a live
+  demo" but were actually inferred from naming convention, not read from
+  source:
+  - **Button's variant set was wrong.** `fl-ds-button` claimed
+    `Default/Secondary/Outline/Error/Success/Warning`. The real installed
+    `button.tsx` is stock shadcn's set — `default/destructive/outline/
+    secondary/ghost/link` — no `success`/`warning` variant exists on
+    Button at all, and the danger variant is `destructive`, not `error`.
+  - **"Button and Badge share a variant set" was wrong.** Badge's real set
+    is `default/secondary/destructive/outline/success/warning` — it
+    overlaps with Button on four names but has `success`/`warning` where
+    Button doesn't, and lacks `ghost`/`link` which Button has. Two
+    separate sets, not one shared one.
+  - Propagated the `error` → `destructive` fix to `fl-ds-dialog`'s example
+    and `fl-ds-toast`'s example (the latter also flagged as unconfirmed,
+    since Toast's own source wasn't read — only inferred from Button/
+    Badge's now-confirmed convention).
+- `fission-tokens.md` rewritten with real values read from an actual
+  scaffold's `app/globals.css`, replacing most of the "theme-dependent,
+  not yet captured" placeholders — `destructive`/`success`/`warning`/
+  `background`/`foreground`/`card`/`border`/`muted-foreground`/`ring`/
+  `sidebar-background`, light and dark, all now have real confirmed hex
+  values. Also flagged a separate real finding: the real `globals.css` has
+  no `data-theme="Fission|Ocean|Forest|Violet|Slate"` selector at all —
+  this file's multi-theme-switching claim was not observed and may be
+  stale; marked unconfirmed rather than silently removed, since only one
+  file was checked.
+- Removed two stale references to the now-deleted generic `design-system`
+  plugin from `fission-tokens.md`, left over from before 4.0.0.
+- **Scaffold mechanics confirmed working end to end, independently
+  verified** (not just the agent's own self-report): a real headless
+  session correctly installed all 10 Fission-owned components, Tailwind +
+  `components.json` were set up correctly, and `components.json` even
+  carries a `registries.fission` entry pointing at the registry base URL —
+  a detail not previously known or documented.
+
 ## 4.2.1 — 2026-10-09 (real UI bug, caught from a live screenshot)
 - Fixed a real UX bug in `fl-ds-new-project`, caught from an actual
   screenshot of the skill running in VS Code's Claude Code extension:

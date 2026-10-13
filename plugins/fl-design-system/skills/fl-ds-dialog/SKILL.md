@@ -40,7 +40,7 @@ import {
     </DialogHeader>
     <DialogFooter>
       <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-      <Button variant="error" onClick={onConfirm}>Delete</Button>
+      <Button variant="destructive" onClick={onConfirm}>Delete</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
@@ -53,8 +53,9 @@ include `DialogTitle` — shadcn's Dialog is built on Radix, which warns at
 runtime if a title is missing (an accessibility requirement, not optional
 chrome).
 
-Use the destructive action's Button variant to match the stakes (`error`
-for delete, not `default`) — see `fl-ds-button`.
+Use the destructive action's Button variant to match the stakes
+(`destructive` for delete, not `default`) — see `fl-ds-button` for
+Button's confirmed, real variant set.
 
 Use `../../scripts/install-fission-component.sh dialog --overwrite` to
 pull an update if the installed component looks stale.

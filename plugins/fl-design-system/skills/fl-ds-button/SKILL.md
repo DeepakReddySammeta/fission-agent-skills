@@ -31,21 +31,24 @@ import { Button } from "@/components/ui/button";
 <Button variant="default">Save</Button>
 <Button variant="secondary">Cancel</Button>
 <Button variant="outline">Learn more</Button>
-<Button variant="error">Delete account</Button>
-<Button variant="success">Approve</Button>
-<Button variant="warning">Proceed with caution</Button>
-<Button size="sm" /> <Button size="lg" /> <Button disabled />
+<Button variant="destructive">Delete account</Button>
+<Button variant="ghost">Dismiss</Button>
+<Button variant="link">View details</Button>
+<Button size="sm" /> <Button size="lg" /> <Button size="icon" /> <Button disabled />
 <Button asChild><Link href="/x">As a link</Link></Button>
 ```
 
-**Variants are Fission's own set — confirmed from the live demo
-(`Default, Secondary, Outline, Error, Success, Warning`), different from
-stock shadcn's `default/destructive/outline/secondary/ghost/link`.** The
-lowercase variant keys above (`error`, `success`, `warning`) are inferred
-from that naming, not read from the component source directly — confirm
-the exact prop strings against `src/registry/button/button.tsx` in
-`FissionHQ/ui-design-system` the first time you use this skill in a
-session, and correct this file via a PR if they differ.
+**Variants are stock shadcn's set — confirmed by reading the actual
+installed component source (`components/ui/button.tsx`) from a real
+scaffold on 2026-10-09**: `default`, `destructive`, `outline`,
+`secondary`, `ghost`, `link`. There is **no** `success` or `warning`
+variant on Button, and the danger variant is named `destructive`, not
+`error` — an earlier version of this file claimed a custom
+`Error/Success/Warning` set shared with Badge; that was wrong, inferred
+from naming convention rather than read from source, and is corrected
+here now that real source has been checked. (Badge *does* have its own
+`success`/`warning` variants — see `fl-ds-badge` — the two components do
+**not** share one variant set.)
 
 Never write a raw `<button>` in product UI. Never hardcode a color on a
 Button — if a one-off visual difference is requested, that's a sign a new
