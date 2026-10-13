@@ -1,5 +1,22 @@
 # fl-design-system changelog
 
+## 4.3.0 — 2026-10-13
+- `fl-ds-new-project`'s Step 2 styling menu is now scoped per framework,
+  not one generic list with Fission added or removed. Per direction: the
+  same mistake that would have offered Fission to an Angular project
+  (architecturally impossible) was also quietly offering `shadcn/ui`,
+  Material UI, and Chakra — all React-only — to Vue/Angular/Svelte
+  projects where they're equally impossible. Built a real per-framework
+  table instead: Vue gets Vuetify/Element Plus/Ant Design Vue/PrimeVue,
+  Angular gets Angular Material/PrimeNG/ng-bootstrap/ng-zorro-antd, Svelte
+  gets Flowbite-Svelte/Skeleton, none of them get shadcn-family libraries
+  or Fission. Next.js and React keep the full menu including Fission as a
+  direct option, unchanged.
+- Added scaffold commands for Vue, Svelte (flagged as naming-unstable —
+  the SvelteKit CLI has changed its invocation before) in the same table,
+  so the skill covers framework + styling end to end for every framework
+  it names in Step 1, not just the two Fission-eligible ones.
+
 ## 4.2.2 — 2026-10-09 (real component API corrections, from an actual scaffold)
 - Ran `fl-ds-setup`'s Step 2 for real (a live headless Claude Code session,
   not a fixture) and read the actual files it produced. Found two real,

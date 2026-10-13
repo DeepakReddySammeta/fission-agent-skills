@@ -48,6 +48,37 @@ UPSTREAM.md                            ← which high-level framework skills com
 SETUP.md                               ← full install-and-verify testing runbook
 ```
 
+## Skills at a glance
+
+All 16, one line each — what fires it, and what it actually does. See
+each skill's own `SKILL.md` for the full detail; this is the index.
+
+| Skill | Fires when | What it does |
+| --- | --- | --- |
+| `fl-ds-new-project` | Starting a brand-new project, framework not yet decided | Asks the framework, then a styling menu scoped to that framework — Fission's design system is one directly selectable option on Next.js/React only |
+| `fl-ds-setup` | Framework already settled (Next.js, or an existing project) | Scaffolds Fission's real Next.js starter, or installs/updates its components into an existing project |
+| `fl-ds-button` | Adding/editing a button | Installs Fission's Button if not already present, then uses it |
+| `fl-ds-input` | Adding/editing a text input | Same pattern, for Input |
+| `fl-ds-card` | Adding/editing a content panel | Same pattern, for Card |
+| `fl-ds-dialog` | Adding/editing a modal/confirmation dialog | Same pattern, for Dialog |
+| `fl-ds-table` | Adding/editing a data table | Same pattern, for Table |
+| `fl-ds-form` | Adding/editing a form with validation | Same pattern, for Form (react-hook-form + a resolver) |
+| `fl-ds-badge` | Adding/editing a status tag/chip | Same pattern, for Badge |
+| `fl-ds-select` | Adding/editing a dropdown | Same pattern, for Select |
+| `fl-ds-tabs` | Adding/editing tabbed navigation | Same pattern, for Tabs |
+| `fl-ds-toast` | Adding/editing a transient notification | Same pattern, for Toast |
+| `fe-debug` | Debugging a frontend bug, any stack | Framework-agnostic root-cause procedure (reproduce, isolate, fix the root, leave a check) |
+| `fe-explore` | Finding where something lives in a frontend codebase | Framework-agnostic search procedure (entry points, grep by behavior, confirm scope) |
+| `fe-knowledge-lookup` | "How/why does this code work" | Reads the real installed code and version, not assumed library behavior |
+| `fe-upstream-setup` | Before installing any React/Next/Angular/Vue upstream skill bundle | Detects the project's actual framework, asks for confirmation, only then names the one matching bundle |
+
+Every `fl-ds-*` component skill (`fl-ds-button` through `fl-ds-toast`)
+follows the identical three-branch pattern: `ready` → use it directly;
+`needs-setup` → install just that one component, then use it; `greenfield`
+→ stop and ask rather than guess. That's why there's one skill per
+component instead of one umbrella skill — see `fl-ds-button`'s own
+`SKILL.md` for the full version of this pattern, not repeated per file here.
+
 ## Why this is scoped to Fission's own design system only
 
 An earlier round of this marketplace shipped a second, generic plugin: one
@@ -143,6 +174,54 @@ claude plugin install frontend-common@fission --scope user   # optional, unrelat
   claude plugin install frontend-common@fission --scope user
   ```
 
+#### Update (Claude Code)
+
+Two separate things, both needed — `marketplace update` refreshes what
+the marketplace *offers*, `plugin update` actually pulls your *installed*
+plugin up to that version:
+
+```bash
+claude plugin marketplace update fission
+claude plugin update fl-design-system@fission
+claude plugin update frontend-common@fission
+```
+
+- **What each line does**: the first fetches the latest commits from this
+  repo and re-reads `marketplace.json` — without it, the second line has
+  nothing new to pull even if this repo has moved on. The second and third
+  lines then update each installed plugin to whatever version the
+  refreshed marketplace now lists.
+- **Check it worked**: `claude plugin list` should show the version number
+  you expect (check `plugins/fl-design-system/.claude-plugin/plugin.json`
+  and `plugins/frontend-common/.claude-plugin/plugin.json` in this repo
+  for the current numbers, or the top of each plugin's `CHANGELOG.md`).
+  If it still shows an old version, the `marketplace update` step didn't
+  actually fetch — check for a network/auth error before re-running
+  `plugin update`.
+- Restart your Claude Code session afterward — same reason as a fresh
+  install, an already-running session won't see the update.
+
+#### Uninstall (Claude Code)
+
+Remove just the plugins, keep the marketplace registered (so you can
+reinstall later without re-adding it):
+
+```bash
+claude plugin uninstall fl-design-system@fission --scope user
+claude plugin uninstall frontend-common@fission --scope user
+```
+
+To remove the marketplace registration entirely — this also uninstalls
+every plugin you got from it, equivalent to the two lines above plus more:
+
+```bash
+claude plugin marketplace remove fission
+```
+
+- **Check it worked**: `claude plugin list` should no longer show either
+  plugin (uninstall), or `claude plugin marketplace list` should no
+  longer show `fission` (marketplace remove).
+
 ### Cursor / Codex
 
 Neither tool has a marketplace mechanism (as of this writing) — copy or
@@ -191,12 +270,53 @@ cp -r <path-to-this-repo>/plugins/frontend-common/scripts .agents/frontend-commo
   delete confirmation dialog" → `fl-ds-dialog`). If nothing fires, see
   "If a skill doesn't auto-fire" below before assuming the copy is wrong.
 
+#### Update (Cursor / Codex)
+
+There's no update command — pull the latest repo and re-run the exact
+same copy commands from above. `cp -r` overwrites existing files, so this
+is safe to re-run as often as you like:
+
+```bash
+cd <path-to-this-repo> && git pull
+# then re-run every cp -r / mkdir -p line from the Install step above,
+# from the project that has these skills copied into it
+```
+
+- **Check it worked**: open any `fl-ds-*` skill's `SKILL.md` under
+  `.agents/skills/` in the project and confirm its content matches what's
+  currently in this repo (e.g. check the version noted in
+  `plugins/fl-design-system/CHANGELOG.md`'s latest entry against what you
+  see). There's no version number stamped in the copied files themselves,
+  since this mechanism doesn't track versions the way Claude Code's
+  plugin system does.
+
+#### Uninstall (Cursor / Codex)
+
+Delete exactly the folders the install step created — **don't** delete
+the whole `.agents/skills/` directory if you keep other, unrelated skills
+there too:
+
+```bash
+rm -rf .agents/skills/fl-ds-new-project .agents/skills/fl-ds-setup \
+       .agents/skills/fl-ds-button .agents/skills/fl-ds-input \
+       .agents/skills/fl-ds-card .agents/skills/fl-ds-dialog \
+       .agents/skills/fl-ds-table .agents/skills/fl-ds-form \
+       .agents/skills/fl-ds-badge .agents/skills/fl-ds-select \
+       .agents/skills/fl-ds-tabs .agents/skills/fl-ds-toast \
+       .agents/fl-design-system
+
+# if frontend-common was also copied in:
+rm -rf .agents/skills/fe-debug .agents/skills/fe-explore \
+       .agents/skills/fe-knowledge-lookup .agents/skills/fe-upstream-setup \
+       .agents/frontend-common
+```
+
 ### GitHub Copilot / VS Code
 
 Copilot reads agent skills from the same kind of directory, plus
 `AGENTS.md`/`CLAUDE.md` for passive rules (not skills). Follow the same
-copy steps as Cursor/Codex above. Check your Copilot/VS Code version's
-current skills-directory location against
+copy, update, and uninstall steps as Cursor/Codex above. Check your
+Copilot/VS Code version's current skills-directory location against
 [Custom instructions support — GitHub Copilot](https://docs.github.com/)
 before copying, since this is the newest-supported integration of the
 three and most likely to have moved since this was written.
