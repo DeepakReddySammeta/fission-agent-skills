@@ -1,5 +1,64 @@
 # fl-design-system changelog
 
+## 4.4.0 — 2026-11-02
+- Added three new skills for patterns the existing 10 component skills
+  didn't cover: `fl-ds-pagination` (prev/next/page-number controls),
+  `fl-ds-infinite-scroll` (scroll-triggered loading), and
+  `fl-ds-data-table` (sortable/paginated table).
+- **Checked the live upstream registry first**
+  (`https://FissionHQ.github.io/ui-design-system/registry.json`) before
+  writing any of these, per this plugin's own rule of reading real source
+  rather than inferring. Result: 19 real items exist (button, input, card,
+  dialog, table, form, badge, select, tabs, toast, plus 7 chart types,
+  file-upload, and map) — none of them is pagination, infinite-scroll, or
+  a data-table. So these three are **composition recipes**, not new
+  "Fission-owned component" installs: `fl-ds-pagination` builds controls
+  from the existing `Button`; `fl-ds-infinite-scroll` uses the native
+  `IntersectionObserver`, no library; `fl-ds-data-table` wires
+  `fl-ds-table`'s markup to TanStack Table's headless row model for
+  sort/page state. None of them touch `install-fission-component.sh` or
+  its owned-name list, since there's nothing in the registry for them to
+  install.
+- Corrected `fl-ds-table`'s own cross-reference, which pointed at "the
+  upstream TanStack skill via `fe-upstream-setup`" — that skill's actual
+  framework-bundle table (checked) never mentions TanStack. Repointed to
+  the new `fl-ds-data-table`/`fl-ds-pagination`/`fl-ds-infinite-scroll`.
+- **Live-tested, not just doc-checked, before this landed**: scaffolded a
+  real Next.js project, installed Table/Button through the real Fission
+  registry, installed `@tanstack/react-table`, and type-checked the exact
+  code samples in `fl-ds-pagination` and `fl-ds-data-table` against it.
+  Caught one real bug: `@tanstack/react-table` just shipped `9.x` as
+  `latest`, a breaking rewrite (`useReactTable` → `useTable`, row-model
+  helpers restructured) — plain `npm install @tanstack/react-table`
+  silently pulls v9 and neither skill's code compiles against it. Both
+  now pin `@tanstack/react-table@8` explicitly, confirmed clean
+  (`tsc --noEmit`, zero errors) with that pin.
+- Separate finding, not acted on here: the live registry also lists 9
+  components (`area-chart`, `bar-chart`, `chart`, `file-upload`,
+  `line-chart`, `map`, `pie-chart`, `radar-chart`, `radial-bar-chart`)
+  that have no skill and aren't in `install-fission-component.sh`'s
+  `FISSION_OWNED` list at all — out of scope for this change, flagged for
+  a future pass.
+- **Separate, more serious finding from the same live test, also not
+  fixed here — needs its own pass**: `install-fission-component.sh`'s
+  core mechanism (`npx shadcn add <registry-url>`) no longer reliably
+  produces Fission-branded output. Running it for real against a fresh
+  project: the shadcn CLI (`4.23.0`) now interactively asks "Base UI vs
+  React Aria vs Radix UI" and a preset name (`Nova`, `Vega`, …) on first
+  run; the resulting `globals.css` carried stock grayscale shadcn OKLCH
+  tokens (no brand orange, no `--success`/`--warning`), and
+  `components.json`'s `registries` field came back `{}` — empty. This
+  directly contradicts 4.2.2's confirmed claim that `components.json`
+  "carries a `registries.fission` entry pointing at the registry base
+  URL" — the shadcn CLI has evidently changed since 2026-10-09 in a way
+  that broke this silently, with no error. Affects all 10 original
+  `fl-ds-*` component skills, not just the 3 added in this release.
+  Tracked for a dedicated fix (likely `shadcn init -b radix` plus an
+  explicit, non-interactive registry/preset config, or writing
+  `components.json` directly rather than relying on the CLI's own init
+  flow) — not attempted here since it's a pre-existing, separate-scope
+  problem.
+
 ## 4.3.0 — 2026-10-13
 - `fl-ds-new-project`'s Step 2 styling menu is now scoped per framework,
   not one generic list with Fission added or removed. Per direction: the

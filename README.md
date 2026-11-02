@@ -33,6 +33,7 @@ plugins/fl-design-system/              ← Fission's own design system, end to e
     fl-ds-setup/                       ← scaffold a new Next.js project on Fission's design system, or install/update it into an existing one
     fl-ds-button/  fl-ds-input/  fl-ds-card/  fl-ds-dialog/  fl-ds-table/
     fl-ds-form/    fl-ds-badge/  fl-ds-select/ fl-ds-tabs/    fl-ds-toast/   ← each checks the detector first, installs on the spot if needed
+    fl-ds-pagination/ fl-ds-infinite-scroll/ fl-ds-data-table/              ← composition recipes over the above; nothing to install, no matching registry primitive
 
 plugins/frontend-common/               ← framework-independent, unrelated to design systems
   .claude-plugin/plugin.json
@@ -43,6 +44,7 @@ plugins/frontend-common/               ← framework-independent, unrelated to d
     fe-explore/             ← framework-agnostic "where does X live" procedure
     fe-knowledge-lookup/    ← framework-agnostic "how/why does this code work" procedure
     fe-upstream-setup/      ← confirms with the engineer before recommending any React/Next/Angular/Vue upstream skill bundle
+    fe-eslint-setup/  fe-prettier-setup/  fe-test-setup/  ← same detect-then-confirm pattern, for tooling scaffolds instead of skill bundles
 
 UPSTREAM.md                            ← which high-level framework skills come from Vercel/TanStack instead of being written here
 SETUP.md                               ← full install-and-verify testing runbook
@@ -50,7 +52,7 @@ SETUP.md                               ← full install-and-verify testing runbo
 
 ## Skills at a glance
 
-All 16, one line each — what fires it, and what it actually does. See
+All 22, one line each — what fires it, and what it actually does. See
 each skill's own `SKILL.md` for the full detail; this is the index.
 
 | Skill | Fires when | What it does |
@@ -67,10 +69,16 @@ each skill's own `SKILL.md` for the full detail; this is the index.
 | `fl-ds-select` | Adding/editing a dropdown | Same pattern, for Select |
 | `fl-ds-tabs` | Adding/editing tabbed navigation | Same pattern, for Tabs |
 | `fl-ds-toast` | Adding/editing a transient notification | Same pattern, for Toast |
+| `fl-ds-pagination` | Adding/editing page-number/prev-next controls | Builds controls from Button + TanStack Table's pagination state — no registry primitive exists for this |
+| `fl-ds-infinite-scroll` | Adding/editing a scroll-to-load feed | Native `IntersectionObserver`, no library and no registry primitive |
+| `fl-ds-data-table` | Adding/editing a sortable/paginated table | Wires `fl-ds-table`'s markup to TanStack Table's row model |
 | `fe-debug` | Debugging a frontend bug, any stack | Framework-agnostic root-cause procedure (reproduce, isolate, fix the root, leave a check) |
 | `fe-explore` | Finding where something lives in a frontend codebase | Framework-agnostic search procedure (entry points, grep by behavior, confirm scope) |
 | `fe-knowledge-lookup` | "How/why does this code work" | Reads the real installed code and version, not assumed library behavior |
 | `fe-upstream-setup` | Before installing any React/Next/Angular/Vue upstream skill bundle | Detects the project's actual framework, asks for confirmation, only then names the one matching bundle |
+| `fe-eslint-setup` | A project needs ESLint set up or reconfigured | Detects the framework, confirms, runs that framework's own first-party setup command (`next lint`, `ng add @angular-eslint/schematics`, `npx sv add eslint`, …) |
+| `fe-prettier-setup` | A project needs Prettier set up | Installs Prettier with a minimal config, wires `eslint-config-prettier` in if ESLint is already configured |
+| `fe-test-setup` | A project needs a test runner set up | Detects the framework, confirms, recommends that framework's current first-party runner (Vitest/Jest/Playwright) rather than guessing one |
 
 Every `fl-ds-*` component skill (`fl-ds-button` through `fl-ds-toast`)
 follows the identical three-branch pattern: `ready` → use it directly;
@@ -78,6 +86,14 @@ follows the identical three-branch pattern: `ready` → use it directly;
 → stop and ask rather than guess. That's why there's one skill per
 component instead of one umbrella skill — see `fl-ds-button`'s own
 `SKILL.md` for the full version of this pattern, not repeated per file here.
+
+`fl-ds-pagination`, `fl-ds-infinite-scroll`, and `fl-ds-data-table` are a
+different kind of skill: composition recipes, not component installs.
+Fission's registry (checked live) has no themed primitive for any of the
+three, so each builds the pattern from components that already exist
+(`Button`, `Table`) plus TanStack Table or the native
+`IntersectionObserver` — never a fallback to unbranded markup, same rule
+as the component skills, just without an install step to run.
 
 ## Why this is scoped to Fission's own design system only
 
@@ -303,11 +319,15 @@ rm -rf .agents/skills/fl-ds-new-project .agents/skills/fl-ds-setup \
        .agents/skills/fl-ds-table .agents/skills/fl-ds-form \
        .agents/skills/fl-ds-badge .agents/skills/fl-ds-select \
        .agents/skills/fl-ds-tabs .agents/skills/fl-ds-toast \
+       .agents/skills/fl-ds-pagination .agents/skills/fl-ds-infinite-scroll \
+       .agents/skills/fl-ds-data-table \
        .agents/fl-design-system
 
 # if frontend-common was also copied in:
 rm -rf .agents/skills/fe-debug .agents/skills/fe-explore \
        .agents/skills/fe-knowledge-lookup .agents/skills/fe-upstream-setup \
+       .agents/skills/fe-eslint-setup .agents/skills/fe-prettier-setup \
+       .agents/skills/fe-test-setup \
        .agents/frontend-common
 ```
 

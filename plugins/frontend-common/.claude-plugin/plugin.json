@@ -1,7 +1,7 @@
 {
   "name": "frontend-common",
-  "version": "1.0.1",
-  "description": "Framework-independent frontend skills: debugging, codebase exploration, and knowledge lookup that apply the same way on React, Next, Angular, Vue, or plain JS. Also holds the gate for framework-specific upstream skills (Vercel/TanStack/etc.) — detects which frontend framework(s) a project actually uses and confirms with the engineer before recommending or installing any framework-specific bundle, so a React project never ends up with Angular skills loaded and vice versa.",
+  "version": "1.1.0",
+  "description": "Framework-independent frontend skills: debugging, codebase exploration, and knowledge lookup that apply the same way on React, Next, Angular, Vue, or plain JS. Also holds the gate for framework-specific upstream skills (Vercel/TanStack/etc.) — detects which frontend framework(s) a project actually uses and confirms with the engineer before recommending or installing any framework-specific bundle, so a React project never ends up with Angular skills loaded and vice versa. Three further skills (fe-eslint-setup, fe-prettier-setup, fe-test-setup) use the same detect-then-confirm pattern to scaffold tooling — each runs the framework's own first-party setup command (next lint, ng add @angular-eslint/schematics, npx sv add, npm init @eslint/config, npm init playwright, …) rather than hand-writing configs or guessing package names.",
   "author": {
     "name": "Fission Labs Platform Team",
     "email": "platform-skills@fissionlabs.com"

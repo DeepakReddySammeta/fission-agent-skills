@@ -25,9 +25,13 @@ claude plugin install frontend-common@fission --scope user
 **Check it worked**: `claude plugin list` (confirm this exact flag against
 `code.claude.com/docs/en/plugins` for your installed CLI version — the
 marketplace mechanism's command surface isn't something I can verify from
-here) should list both plugins — `fl-design-system` (12 skills:
-`fl-ds-new-project`, `fl-ds-setup`, plus 10 component skills),
-`frontend-common` (4 skills).
+here) should list both plugins — `fl-design-system` (15 skills:
+`fl-ds-new-project`, `fl-ds-setup`, plus 10 component skills and 3
+composition-recipe skills — `fl-ds-pagination`, `fl-ds-infinite-scroll`,
+`fl-ds-data-table`), `frontend-common` (7 skills: `fe-debug`,
+`fe-explore`, `fe-knowledge-lookup`, `fe-upstream-setup`, plus 3
+tooling-setup skills — `fe-eslint-setup`, `fe-prettier-setup`,
+`fe-test-setup`).
 
 If this errors on the `marketplace add` step with an auth failure, it's
 almost always SSH keys — same as any private-repo clone, nothing special to
@@ -198,7 +202,7 @@ want a non-design-system data point too.
 ## Exit criteria for this round
 
 - [ ] `claude plugin marketplace add` resolves the repo
-- [ ] Both plugins install; 12 (`fl-design-system`) + 4 (`frontend-common`)
+- [ ] Both plugins install; 15 (`fl-design-system`) + 7 (`frontend-common`)
       skills are visible
 - [ ] Each detector fixture above (Fission design-system + frontend-
       framework) returns the expected result
@@ -228,6 +232,14 @@ want a non-design-system data point too.
 - [ ] `fe-upstream-setup` observed asking for confirmation before any
       framework-specific upstream install, on both a React/Next project and
       a non-React project
+- [ ] `fe-eslint-setup`, `fe-prettier-setup`, and `fe-test-setup` each
+      observed asking for confirmation before running their install
+      command, and the command actually run matches the table in each
+      skill's `SKILL.md` for the detected framework
+- [ ] For `fl-ds-pagination`/`fl-ds-infinite-scroll`/`fl-ds-data-table`:
+      confirmed none of them try to run
+      `install-fission-component.sh <name>` for a name not in
+      `FISSION_OWNED` — they should only ever install `button`/`table`
 - [ ] The auto-fire audit outcome from step 4 recorded (fires / doesn't /
       only on explicit invocation), per tool tested
 - [ ] One cross-tool smoke test, if you want that proposal claim verified

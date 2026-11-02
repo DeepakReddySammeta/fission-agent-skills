@@ -44,15 +44,17 @@ import {
 </Table>
 ```
 
-This is markup primitives only — for sorting, pagination, or filtering,
-pair it with TanStack Table rather than hand-rolling that logic (see the
-upstream TanStack skill via `frontend-common`'s `fe-upstream-setup`, not
-this one).
+This is markup primitives only — for sorting or pagination, see
+`fl-ds-data-table`, which wires this same markup to TanStack Table rather
+than hand-rolling that logic. For a feed that loads more on scroll
+instead of paging, see `fl-ds-infinite-scroll`.
 
 Use `../../scripts/install-fission-component.sh table --overwrite` to
 pull an update if the installed component looks stale.
 
 ## Scope boundary
 
-Table only. For the cells' interactive controls (a button or badge inside
-a row) see `fl-ds-button` or `fl-ds-badge`.
+Static table only. For the cells' interactive controls (a button or
+badge inside a row) see `fl-ds-button` or `fl-ds-badge`. For sorting,
+pagination, filtering, or infinite scroll, see `fl-ds-data-table`,
+`fl-ds-pagination`, and `fl-ds-infinite-scroll`.
